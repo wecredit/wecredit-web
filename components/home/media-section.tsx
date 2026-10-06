@@ -31,7 +31,7 @@ const MediaSection = (): React.ReactNode => {
           WeCredit in the Media
         </h2>
 
-        <div className="mx-auto mt-8 grid max-w-sm grid-cols-2 place-items-center gap-4 sm:max-w-2xl sm:grid-cols-2 sm:gap-6 md:max-w-4xl md:grid-cols-6 lg:max-w-5xl lg:grid-cols-4 lg:gap-8">
+        <div className="mx-auto mt-8 grid grid-cols-2 place-items-center gap-4 sm:grid-cols-2 sm:gap-6 md:grid-cols-6 lg:grid-cols-4 lg:gap-8">
           {MEDIA_OUTLETS.map((outlet) => (
             <MediaLogo key={outlet.name} outlet={outlet} />
           ))}
