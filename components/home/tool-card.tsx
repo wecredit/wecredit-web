@@ -40,13 +40,13 @@ const ToolCard = ({
     return (
       <Link
         href={href}
-        className="group relative order-first col-span-2 block h-[196px] overflow-hidden rounded-xl bg-gradient-to-br from-wc-blue-500 to-wc-accent p-3.5 text-white shadow-sm transition-shadow hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 sm:p-4 lg:h-56 lg:p-5"
+        className="group relative order-first col-span-2 block overflow-hidden rounded-xl bg-gradient-to-br from-wc-blue-500 to-wc-accent p-3.5 text-white shadow-sm transition-shadow hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 sm:p-4 lg:h-56 lg:p-5"
       >
         <div className="absolute -bottom-16 -left-12 size-40 rounded-full bg-white/10" />
         <div className="absolute -right-10 -top-20 size-48 rounded-full bg-white/10" />
 
         <div className="relative z-10 flex h-full flex-col items-start">
-          <div className="flex items-center rounded-full border border-white/15 bg-white/20 px-3 py-1 text-[10px] font-semibold tracking-wide sm:text-xs">
+          <div className="flex items-center rounded-full border border-white/15 bg-white/20 px-2 sm:px-3 py-1 text-[10px] font-semibold tracking-wide sm:text-xs">
             <span className="mr-1.5 size-2 rounded-full bg-wc-green" />
             NEW • JUST LAUNCHED
           </div>

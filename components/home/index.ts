@@ -17,3 +17,4 @@ export { default as BlogSection } from './blog-section';
 export { default as DreamsSection } from './dreams-section';
 export { default as HomePage } from './home-page';
 export { default as PartnerCard } from './partner-card';
+export { default as MediaSection } from './media-section';

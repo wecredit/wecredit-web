@@ -12,6 +12,7 @@ import BlogSection from './blog-section';
 import AppDownloadSection from './app-download-section';
 import DreamsSection from './dreams-section';
 import { PersonalLoanContent } from '@/components/personal-loan/personal-loan-content';
+import MediaSection from './media-section';
 
 /**
  * Main home page component that composes all sections
@@ -61,6 +62,8 @@ const HomePage = async (): Promise<React.ReactNode> => {
 
       {/* Blog Section */}
       <BlogSection />
+
+      <MediaSection />
 
       {/* App Download Section */}
       <AppDownloadSection />

@@ -82,6 +82,16 @@ export const IMAGES = {
   PARTNERS: {
     BASE_PATH: `${BUCKET_IMAGE_URL}/partners`,
   },
+  MEDIA: {
+    MAGICBRICKS: '/assets/media/magicbricks.svg',
+    IBS_INTELLIGENCE: '/assets/media/ibs-intelligence.png',
+    INDIAN_STARTUP_NEWS: '/assets/media/indian-startup-news.png',
+    SUGERMINT: '/assets/media/sugermint.png',
+    MAKEMONEY: '/assets/media/makemoney.png',
+    NDTV_PROFIT: '/assets/media/ndtv-profit.png',
+    STARTUPTALKY: '/assets/media/startuptalky.png',
+    JAGRAN: '/assets/media/jagran.png',
+  },
   FEDERATION_BANK_REDIRECT: {
     WECREDIT_LOGO: `${BUCKET_IMAGE_URL}/wecredit-icon.png`,
     FEDERAL_BANK_LOGO: `${BUCKET_IMAGE_URL}/federation-bank-redirect-federal-bank-logo.png`,
