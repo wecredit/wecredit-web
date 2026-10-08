@@ -40,15 +40,16 @@ export const IMAGES = {
     CREDIT_SCORE: `${BUCKET_IMAGE_URL}/check-credit-score.png`,
     BUSINESS_LOAN_CALC: `${BUCKET_IMAGE_URL}/business-loan-calculator-illustration.png`,
     OTP_SMS: `${BUCKET_IMAGE_URL}/otp-sms.png`,
+    LOAN_PROCESS_FLOW: `${BUCKET_IMAGE_URL}/loan-process-flow.png`,
   },
   TOOLS_AND_CALCULATORS_ILLUSTRATIONS: {
     TC_EMI_CALC: `${BUCKET_IMAGE_URL}/EMI CALCULATOR Illustrtaion tool.png`,
     TC_PERSONAL_LOAN: `${BUCKET_IMAGE_URL}/PL Illustrtaion tool.png`,
     TC_CREDIT_SCORE: `${BUCKET_IMAGE_URL}/Check credit score tools.png`,
     TC_BUSINESS_LOAN_CALC: `${BUCKET_IMAGE_URL}/BL CALCULATOR  Illustrtaion tool.png`,
-    
+
   },
-  
+
   DIRECT_CONTACT_EXPERTS: {
     LAKASH: `${BUCKET_IMAGE_URL}/person_placeholder.png`,
     PLAYSTORE_ICON: `${BUCKET_IMAGE_URL}/playstoreicon.png`,

@@ -7,6 +7,7 @@ import ActionButton from './action-button';
 import LoanBannerPerspectiveGrid from './loan-banner-perspective-grid';
 import LoanFeatureHighlights from './loan-feature-highlights';
 import type { LoanProductSplitLayoutProps } from './loan-product-split-layout.types';
+import { LOAN_PRODUCT_PAGE_NOTE } from '@/lib/constants/common';
 
 const DEFAULT_HERO_FRAME_CLASS_NAME =
   'relative z-10 mt-5 flex h-56 w-full items-center justify-center sm:h-72 md:mt-10 md:h-80';
@@ -154,6 +155,9 @@ const LoanProductSplitLayout = ({
             <h2 className="w-full max-w-md text-xl font-semibold leading-snug md:text-2xl md:leading-tight">
               {headline}
             </h2>
+            <p className="mt-1.5 text-xs leading-relaxed text-gray-700 md:mt-2">
+              {LOAN_PRODUCT_PAGE_NOTE}
+            </p>
             <p className="mt-1.5 text-xs leading-relaxed text-gray-700 md:mt-2">
               {subheadline}
             </p>

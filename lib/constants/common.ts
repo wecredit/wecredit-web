@@ -87,9 +87,9 @@ export const HERO_CAROUSEL_SLIDES: SlideContent[] = [
     titleGradient: 'from 25+ Lenders',
     description:
       'Find the right loan offer based on your profile, interest rate, eligibility, and repayment needs - all in one place.',
-      ctaText: "Apply For Loan",
-      ctaLink: "/personal-loan",
-      alt: 'Compare personal loan offers from 25+ lenders on WeCredit',
+    ctaText: "Apply For Loan",
+    ctaLink: "/personal-loan",
+    alt: 'Compare personal loan offers from 25+ lenders on WeCredit',
   },
   {
     id: "slide-1",
@@ -220,3 +220,17 @@ export const BRANDS = [
     displayUrl: 'FatafatLoans',
   },
 ];
+
+export const MARKETPLACE_DISCLAIMER =
+  'WeCredit is an independent technology-enabled credit marketplace that helps customers discover, compare and connect with multiple banks and NBFCs. WeCredit is not a lender and does not sanction or disburse loans.';
+
+export const OUR_PARTNER_DISCLAIMER =
+  'Loan approval, interest rate, tenure, fees and other terms are independently determined by the respective lending partner.'
+
+export const TERMS_DISCLAIMER =
+  'WeCredit operates a multi-lender marketplace providing customers access to credit products offered by independent lending partners.';
+
+export const TERMS_OF_USE_NOTE =
+  'WeCredit does not undertake lending, underwriting, sanction, pricing, disbursement, servicing or collection on behalf of any particular lender.';
+
+export const LOAN_PRODUCT_PAGE_NOTE = 'Loan amount, interest rate, tenure and fees are determined by the respective lending partner.'
