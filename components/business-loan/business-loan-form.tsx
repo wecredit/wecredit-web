@@ -8,6 +8,7 @@ import { buildBusinessLoanPayload } from './business-loan-form.config';
 import { useBusinessLoanForm } from './use-business-loan-form';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/use-auth';
+import { LOAN_PRODUCT_PAGE_NOTE } from '@/lib/constants/common';
 
 interface BusinessLoanFormProps {
   onClose?: () => void;
@@ -100,9 +101,14 @@ const BusinessLoanForm = ({ onClose, isModal = false, onSuccess }: BusinessLoanF
         >
           <ArrowLeft className="w-6 h-6" />
         </button>
-        <h2 className="text-base font-medium text-gray-900">
-          Business Loan ({currentStep}/{totalSteps})
-        </h2>
+        <div className="min-w-0">
+          <h2 className="text-base font-medium text-gray-900">
+            Business Loan ({currentStep}/{totalSteps})
+          </h2>
+          <p className="text-xs text-gray-500 mt-0.5">
+            {LOAN_PRODUCT_PAGE_NOTE}
+          </p>
+        </div>
       </div>
 
       <form onSubmit={onFormSubmit} className="flex flex-col flex-1 min-h-0">

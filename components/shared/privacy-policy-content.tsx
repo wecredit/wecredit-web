@@ -170,7 +170,7 @@ const PrivacyPolicyContent = (): React.ReactNode => {
           </p>
 
           <p>
-            2.4. By consenting to the terms of our Privacy Policy, you acknowledge and agree that we may, after your explicit agreement to view eligible offers, automatically submit your provided information to the Lending Partners to pre-qualify you as an applicant. This process may result in you receiving solicitations or offers from Lending Partners for which you are pre-qualified. Please note that our role is solely as an intermediary and we do not influence or control the offers or solicitations you may receive from the Lending Partners.
+            2.4. WeCredit operates a multi-lender marketplace providing customers access to credit products offered by independent lending partners.
           </p>
 
           <p>

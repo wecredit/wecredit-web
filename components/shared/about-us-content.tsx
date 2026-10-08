@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 import { BackToHomeButton } from './back-to-home-button';
-import { ACHIEVEMENTS, BRANDS } from '@/lib/constants/common';
+import { ACHIEVEMENTS, BRANDS, TERMS_DISCLAIMER } from '@/lib/constants/common';
 import { useIsMobilePlatform } from '@/hooks/use-is-mobile-platform';
 import PageHeading from './page-heading';
 
@@ -112,8 +112,12 @@ const AboutUsContent = (): React.ReactNode => {
           We make personal finance simple and transparent.
         </h3>
 
-        <p className=" font-normal text-sm leading-[1.2] tracking-normal text-[#7F7F7F] mb-8">
+        {/* <p className=" font-normal text-sm leading-[1.2] tracking-normal text-[#7F7F7F] mb-8">
           With the help of data and technology, WeCredit lets you view and compare multiple loan and card offers in one place. We share clear and unbiased information to help you make better decisions and support you throughout your credit journey.
+        </p> */}
+
+        <p className=" font-normal text-sm leading-[1.2] tracking-normal text-[#7F7F7F] mb-8">
+          {TERMS_DISCLAIMER}
         </p>
 
         {/* Team */}
