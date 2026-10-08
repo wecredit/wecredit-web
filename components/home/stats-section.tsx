@@ -62,11 +62,6 @@ const StatsSection = (): React.ReactNode => {
           ))}
         </div>
 
-        <div className="mt-8 pt-6">
-          <p className="mx-auto max-w-4xl text-center text-xs sm:text-sm leading-relaxed text-gray-500">
-            {MARKETPLACE_DISCLAIMER}
-          </p>
-        </div>
       </div>
     </section>
   );

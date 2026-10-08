@@ -13,6 +13,7 @@ import AppDownloadSection from './app-download-section';
 import DreamsSection from './dreams-section';
 import { PersonalLoanContent } from '@/components/personal-loan/personal-loan-content';
 import MediaSection from './media-section';
+import { MARKETPLACE_DISCLAIMER } from '@/lib/constants/common';
 
 /**
  * Main home page component that composes all sections
@@ -73,6 +74,12 @@ const HomePage = async (): Promise<React.ReactNode> => {
 
       {/* Shared apply flow (auth/dedupe + lead form) for home page CTA */}
       <PersonalLoanContent />
+
+      <div className="mt-8 pt-6">
+        <p className="mx-auto max-w-4xl text-center text-xs sm:text-sm leading-relaxed text-gray-500">
+          {MARKETPLACE_DISCLAIMER}
+        </p>
+      </div>
     </div>
   );
 };
