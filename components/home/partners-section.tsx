@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Partner } from '@/types/wecredit';
-import { PARTNERS } from '@/lib/constants/common';
+import { OUR_PARTNER_DISCLAIMER, PARTNERS } from '@/lib/constants/common';
 import PartnerCard from './partner-card';
 import { motion } from 'framer-motion';
 
@@ -52,7 +52,7 @@ const PartnersSection = (): React.ReactNode => {
   return (
     <section className="bg-white wc-section-gap overflow-hidden">
       <motion.h2
-        className="wc-section-heading text-gray-900"
+        className="wc-section-heading !mb-4 text-gray-900"
         initial={{ opacity: 0, y: 10 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
@@ -60,7 +60,9 @@ const PartnersSection = (): React.ReactNode => {
       >
         Our Partners
       </motion.h2>
-
+      <p className="text-center font-normal text-xs leading-5 tracking-normal text-zinc-500 mb-4 lg:text-sm lg:leading-6">
+        {OUR_PARTNER_DISCLAIMER}
+      </p>
       <div className="mx-auto max-w-7xl space-y-4 px-4 sm:px-6 md:px-4 lg:px-0">
         <MarqueeRow partners={row1Partners} direction="left" />
         <MarqueeRow partners={row2Partners} direction="right" />
