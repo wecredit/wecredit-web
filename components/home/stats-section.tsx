@@ -1,9 +1,5 @@
-interface StatItem {
-  id: string;
-  value: string;
-  suffix?: string;
-  label: string;
-}
+import type { StatItem } from './stats-section.types';
+import { MARKETPLACE_DISCLAIMER } from '@/lib/constants/common';
 
 const stats: StatItem[] = [
   {
@@ -37,7 +33,7 @@ const stats: StatItem[] = [
  */
 const StatsSection = (): React.ReactNode => {
   return (
-    <section className="bg-white pb-10 lg:py-14">
+    <section className="bg-white py-10">
       <div
         className="mx-auto max-w-7xl xl:px-0 px-4"
       >
@@ -64,6 +60,12 @@ const StatsSection = (): React.ReactNode => {
               </span>
             </div>
           ))}
+        </div>
+
+        <div className="mt-8 pt-6">
+          <p className="mx-auto max-w-4xl text-center text-xs sm:text-sm leading-relaxed text-gray-500">
+            {MARKETPLACE_DISCLAIMER}
+          </p>
         </div>
       </div>
     </section>

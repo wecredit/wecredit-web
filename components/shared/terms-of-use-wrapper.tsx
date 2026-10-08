@@ -2,6 +2,7 @@
 
 import type { ReactNode } from 'react';
 import { IMAGES } from '@/lib/constants/images';
+import { TERMS_OF_USE_NOTE } from '@/lib/constants/common';
 import { FooterLinkPageWrapper } from './footer-link-page-wrapper';
 import PageHeading from './page-heading';
 
