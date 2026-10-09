@@ -31,6 +31,7 @@ import {
   TRENDING_OFFERS_RETURN_PATH,
 } from '@/lib/utils/internal-lender-navigation';
 import { getLenderThemeColor } from '@/lib/utils/colors';
+import { useLntCampaignRedirect } from '@/hooks/use-lnt-campaign-redirect';
 
 interface CampaignLandingClientProps {
   lenderName: string;
@@ -110,6 +111,16 @@ export const CampaignLandingClient = ({
     onCancel: handleCloseModal,
   });
 
+  const { isLntLender, lntRedirectError } = useLntCampaignRedirect({
+    lenderName,
+    isLoading,
+    error,
+    canonicalLenderName,
+    mobile,
+    isAuthenticated,
+    userPhone: user?.phoneNumber,
+  });
+
   // Reset modal state on mount (prevents reopening on browser back)
   useEffect(() => {
     setShowAutoFillModal(false);
@@ -118,10 +129,11 @@ export const CampaignLandingClient = ({
 
   useEffect(() => {
     if (shouldNavigateToOffersPage) {
+      if (isLntLender) return;
       router.push('/offers');
       return;
     }
-  }, [shouldNavigateToOffersPage, router]);
+  }, [shouldNavigateToOffersPage, router, isLntLender]);
 
   // Handle API errors and lender validation
   useEffect(() => {
@@ -169,6 +181,7 @@ export const CampaignLandingClient = ({
   // Show auto-fill modal when all conditions are met
   useEffect(() => {
     if (isLoading || error || !canonicalLenderName) return;
+    if (isLntLender) return;
 
     // Auth owns all lender form access. With ?mn=, the OTP modal opens above;
     // wait for OTP success before showing auto-fill or mounting the form.
@@ -178,7 +191,7 @@ export const CampaignLandingClient = ({
 
     // Valid lender: show auto-fill modal first
     setShowAutoFillModal(true);
-  }, [isLoading, error, canonicalLenderName, isAuthenticated]);
+  }, [isLoading, error, canonicalLenderName, isAuthenticated, isLntLender]);
 
   /**
    * Handle auto-fill modal proceed
@@ -255,6 +268,33 @@ export const CampaignLandingClient = ({
    * Otherwise, return null
    */
   const renderPageContent = () => {
+    if (isLntLender) {
+      if (lntRedirectError) {
+        return (
+          <main className="flex min-h-screen flex-col items-center justify-center px-4">
+            <h1 className="mb-2 text-xl font-semibold">We could not start your journey</h1>
+            <p className="mb-4 max-w-md text-center text-sm text-muted-foreground">
+              {lntRedirectError}
+            </p>
+            <button
+              type="button"
+              onClick={() => router.push('/')}
+              className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-90"
+            >
+              Go to homepage
+            </button>
+          </main>
+        );
+      }
+      return (
+        <main className="flex min-h-screen flex-col items-center justify-center px-4">
+          <h1 className="mb-2 text-xl font-semibold">Redirecting you to your offer...</h1>
+          <p className="text-sm text-muted-foreground">
+            Please wait while we securely connect you to your lender.
+          </p>
+        </main>
+      );
+    }
     if (showLoading) return <PageLoader />;
     if (showLeadFormModal) return <div className="fixed inset-0 z-50 bg-white flex flex-col overflow-y-auto">{renderLeadFormContent()}</div>;
     return null;
@@ -273,11 +313,13 @@ export const CampaignLandingClient = ({
     console.log('[auto-fill] showAutoFillModal: ', {showAutoFillModal, showForm});
   }, [showAutoFillModal, showForm]);
 
+  const isAutoFillOpen = !isLntLender && showAutoFillModal && showForm;
+
   return (
     <>
       {/* Auto-Fill Modal - shown first (renders above the original page background) */}
       <AutoFillModal
-        isOpen={showAutoFillModal && showForm}
+        isOpen={isAutoFillOpen}
         onProceed={handleAutoFillProceed}
         onClose={handleAutoFillCloseModal}
         disableTimer={isDebugMode}

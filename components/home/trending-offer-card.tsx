@@ -9,11 +9,13 @@ import { PercentIcon, CalendarIcon } from '../icons';
 import ArrowBadge from '../ui/arrow-badge';
 import { useAuth } from '@/hooks/use-auth';
 import { ActionButton } from '../shared';
-import { checkStatusAll } from '@/lib/api/wecredit';
-import { STORAGE_MOBILE, STORAGE_AUTH_TOKEN } from '@/lib/constants/api-keys';
+import { checkStatusAll, forwardLenderRedirectByPhone } from '@/lib/api/wecredit';
+import { STORAGE_MOBILE, STORAGE_AUTH_TOKEN, LNT_LENDER_NAME } from '@/lib/constants/api-keys';
 import type { LenderOfferStatus, LenderType } from '@/types/wecredit';
 import { getAmountUptoLabel } from '@/lib/lender-display';
 import { buildInternalLenderNavigationHref } from '@/lib/utils/internal-lender-navigation';
+import { isLnt } from '@/lib/utils/common-helper';
+import { toast } from 'sonner';
 
 /** Props for TrendingOfferCard component */
 interface TrendingOfferCardProps {
@@ -232,6 +234,38 @@ const TrendingOfferCard = ({
       // This disables the button during check but doesn't change card UI
       if (isMountedRef.current) {
         setIsCheckingEligibility(true);
+      }
+
+      // L&T direct redirect
+      const isLntCard = isLnt(id) || isLnt(lenderName);
+      if (isLntCard) {
+        try {
+          const result = await forwardLenderRedirectByPhone(
+            mobile,
+            LNT_LENDER_NAME,
+            token,
+            abortController.signal,
+          );
+          if (!result.success && isMountedRef.current) {
+            setIsCheckingEligibility(false);
+            toast.error(result.error || 'Unable to connect to lender. Please try again.');
+          }
+        } catch (err) {
+          if (isMountedRef.current) {
+            setIsCheckingEligibility(false);
+            if (err instanceof Error && err.name === 'AbortError') {
+              return;
+            }
+            const msg =
+              err instanceof Error
+                ? err.message
+                : 'Something went wrong while processing your request.';
+            toast.error(msg);
+          }
+        } finally {
+          abortControllerRef.current = null;
+        }
+        return;
       }
 
       try {
