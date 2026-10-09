@@ -34,6 +34,7 @@ export async function GET(): Promise<NextResponse> {
     `${baseUrl}${SITEMAP_CHILD_PATHS.pages}`,
     `${baseUrl}${SITEMAP_CHILD_PATHS.posts}`,
     `${baseUrl}${SITEMAP_CHILD_PATHS.loans}`,
+    `${baseUrl}${SITEMAP_CHILD_PATHS.loanApps}`,
   ];
 
   return xmlResponse(buildSitemapIndexXml(childSitemapUrls));
