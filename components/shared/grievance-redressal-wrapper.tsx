@@ -18,18 +18,6 @@ const GrievanceRedressalWrapper = (): ReactNode => {
     >
       <PageHeading className="sr-only">WeCredit Grievance Redressal</PageHeading>
       <GrievanceContactContent />
-      <div className="mb-8 flex justify-center py-2">
-        <div className="w-full max-w-sm sm:max-w-md lg:max-w-lg">
-          <Image
-            src={IMAGES.ILLUSTRATIONS.LOAN_PROCESS_FLOW}
-            alt="WeCredit Loan Process Flow - Customer, Marketplace, Compare Lenders, Lender KYC and Underwriting, Loan Sanction, Disbursement"
-            width={1024}
-            height={1536}
-            className="h-auto w-full rounded-xl object-contain shadow-sm border border-gray-100"
-            priority
-          />
-        </div>
-      </div>
     </FooterLinkPageWrapper>
   );
 };
