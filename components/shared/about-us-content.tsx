@@ -229,7 +229,7 @@ const AboutUsContent = (): React.ReactNode => {
         </div>
 
         {/* Our Brands */}
-        <div className="mb-6 mt-8">
+        {/* <div className="mb-6 mt-8">
           <h2 className=" font-medium text-base leading-[1] tracking-normal text-black">
             Our Brands
           </h2>
@@ -245,7 +245,7 @@ const AboutUsContent = (): React.ReactNode => {
               displayUrl={brand.displayUrl}
             />
           ))}
-        </div>
+        </div> */}
         <div className="mb-8 flex justify-center py-2">
           <div className="w-full max-w-sm sm:max-w-md lg:max-w-lg">
             <Image
