@@ -33,7 +33,7 @@ const stats: StatItem[] = [
  */
 const StatsSection = (): React.ReactNode => {
   return (
-    <section className="bg-white py-10">
+    <section className="bg-white md:py-10">
       <div
         className="mx-auto max-w-7xl xl:px-0 px-4"
       >

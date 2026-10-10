@@ -20,12 +20,12 @@ import {
 } from '@/components/offers';
 import { UnmatchedOffersSection } from './unmatched-offers-section';
 import type { LenderOfferStatus } from '@/types/wecredit';
-import { forwardUpswingRedirect, updateUtmClicked } from '@/lib/api/wecredit';
-import { STORAGE_AUTH_TOKEN, STORAGE_MOBILE } from '@/lib/constants/api-keys';
+import { forwardLenderRedirectByPhone, forwardUpswingRedirect, updateUtmClicked } from '@/lib/api/wecredit';
+import { LNT_LENDER_NAME, STORAGE_AUTH_TOKEN, STORAGE_MOBILE } from '@/lib/constants/api-keys';
 import { ActionButton, PageHeader } from '@/components/shared';
 import { useOfferStore } from '@/stores/offer-store';
 import { useLoanApplicationStore } from '@/stores/loan-application-store';
-import { isFederationBank, isUpswingRedirectAllowed, isZapcash, mapingLenderNameToLenderCode, parseAmountToNumber } from '@/lib/utils/common-helper';
+import { isFederationBank, isLnt, isUpswingRedirectAllowed, isZapcash, mapingLenderNameToLenderCode, parseAmountToNumber } from '@/lib/utils/common-helper';
 import { useInfoSearchParams } from '@/hooks/use-info-search-params';
 import { useUrlParamsStore } from '@/stores/url-params-store';
 import { pushOfferpageEvent } from '@/lib/gtm';
@@ -222,6 +222,11 @@ export const OffersView = () => {
     }
 
     // LNT & Upswing LNT special flow
+    if (isLnt(offerLenderName)) {
+      void forwardLenderRedirectByPhone(mobile, LNT_LENDER_NAME, token);
+      return;
+    }
+
     // For INITIATED offers, open UTM link
     const utmLink: string | undefined = offer.utmLink;
     if (!utmLink) {
