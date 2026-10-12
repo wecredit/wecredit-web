@@ -11,9 +11,9 @@
 
 import { getCookie } from 'cookies-next';
 import { useEffect, useRef } from 'react';
-import { forwardUpswingRedirect } from '@/lib/api/wecredit';
-import { STORAGE_AUTH_TOKEN, STORAGE_MOBILE } from '@/lib/constants/api-keys';
-import { isUpswingRedirectAllowed } from '@/lib/utils/common-helper';
+import { forwardLenderRedirectByPhone, forwardUpswingRedirect } from '@/lib/api/wecredit';
+import { LNT_LENDER_NAME, STORAGE_AUTH_TOKEN, STORAGE_MOBILE } from '@/lib/constants/api-keys';
+import { isLnt, isUpswingRedirectAllowed } from '@/lib/utils/common-helper';
 import type { LenderOfferStatus } from '@/types/wecredit';
 
 export type UseAutoUpswingRedirectAfterLntLeadParams = {
@@ -66,7 +66,11 @@ export const useAutoUpswingRedirectAfterLntLead = (
 
     hasFiredRef.current = true;
     const token = getCookie(STORAGE_AUTH_TOKEN) as string | undefined;
-    void forwardUpswingRedirect(mobile, token, offer.utmLink);
+    if (isLnt(offer.lenderName)) {
+      void forwardLenderRedirectByPhone(mobile, LNT_LENDER_NAME, token);
+    } else {
+      void forwardUpswingRedirect(mobile, token, offer.utmLink);
+    }
   }, [
     isLntOrUpswingLntUrlLender,
     isLoading,

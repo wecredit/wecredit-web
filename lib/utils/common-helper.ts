@@ -39,6 +39,15 @@ export const mapingLenderNameToLenderCode = (lenderName: string): string => {
     }
 };
 
+export const isLnt = (nameOrId?: string | null): boolean => {
+    if (!nameOrId) return false;
+    const normalized = nameOrId.toLowerCase().trim();
+    return (
+        normalized === 'lnt' ||
+        normalized === 'upswing_lnt'
+    );
+};
+
 export const isUpswingRedirectAllowed = (lenderName: string): boolean => {
     return lenderName.toLowerCase() === 'lnt' || lenderName.toLowerCase() === 'upswing_lnt' || lenderName.toLowerCase() === 'upswing_dmi';
 };
@@ -62,8 +71,8 @@ export function hasMatchingStatusLender(lenders: LenderOfferStatus[], lenderName
 
 export const getLenderNameFromUrl = (searchParams: ReadonlyURLSearchParams, lendernameFromStore?: string): string => {
     return (searchParams?.get('lenderName') ?? searchParams?.get('lendername') ?? searchParams?.get('lender_name') ?? lendernameFromStore ?? '')
-    .trim()
-    .toLowerCase()
+        .trim()
+        .toLowerCase()
 }
 
 export const formatToTwoDecimals = (amount: string | number | undefined): string => {

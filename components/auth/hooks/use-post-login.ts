@@ -17,6 +17,10 @@ import {
 } from '@/lib/constants/events';
 import { useLoanApplicationStore } from '@/stores/loan-application-store';
 import { buildInternalLenderNavigationHref } from '@/lib/utils/internal-lender-navigation';
+import { forwardLenderRedirectByPhone } from '@/lib/api/wecredit';
+import { LNT_LENDER_NAME, STORAGE_AUTH_TOKEN, STORAGE_MOBILE } from '@/lib/constants/api-keys';
+import { isLnt } from '@/lib/utils/common-helper';
+import { getCookie } from 'cookies-next';
 
 type SubmitFn<TPayload> = (payload: TPayload) => Promise<boolean>;
 
@@ -88,8 +92,20 @@ export const usePostLogin = (): void => {
         break;
 
       case 'check_eligibility':
-        if (action.lenderName) {
-          router.push(buildInternalLenderNavigationHref(action.lenderName));
+        if (action.lenderName || action.lenderId) {
+          if (isLnt(action.lenderId) || isLnt(action.lenderName)) {
+            const mobile =
+              (getCookie(STORAGE_MOBILE) as string | undefined) ||
+              useAuthStore.getState().user?.phoneNumber;
+            const token = getCookie(STORAGE_AUTH_TOKEN) as string | undefined;
+            if (mobile) {
+              void forwardLenderRedirectByPhone(mobile, LNT_LENDER_NAME, token);
+              break;
+            }
+          }
+          if (action.lenderName) {
+            router.push(buildInternalLenderNavigationHref(action.lenderName));
+          }
         }
         break;
       case 'submit_business_loan':

@@ -11,16 +11,16 @@ import {
   OffersHero,
 } from '@/components/offers';
 import type { LenderOfferStatus } from '@/types/wecredit';
-import { updateUtmClicked } from '@/lib/api/wecredit';
+import { forwardLenderRedirectByPhone, updateUtmClicked } from '@/lib/api/wecredit';
 import { notifyForwardNavigationEvent } from '@/lib/api/upswing-navigation-event';
-import { STORAGE_AUTH_TOKEN, STORAGE_MOBILE } from '@/lib/constants/api-keys';
+import { LNT_LENDER_NAME, STORAGE_AUTH_TOKEN, STORAGE_MOBILE } from '@/lib/constants/api-keys';
 import { ActionButton, PageHeader } from '@/components/shared';
 import { useEffect, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useLoanApplicationStore } from '@/stores/loan-application-store';
 import { buildOffersPathClearingLenderFilter, buildOffersPathWithQuery } from '@/lib/utils/offers-navigation';
 import { useUrlParamsStore } from '@/stores/url-params-store';
-import { isFederationBank, isZapcash } from '@/lib/utils/common-helper';
+import { isFederationBank, isLnt, isZapcash } from '@/lib/utils/common-helper';
 import { useFederationBankRedirect } from '@/hooks/use-federation-bank-redirect';
 import { FederationBankRedirectOverlay } from '@/components/offers/federation-bank-redirect-overlay';
 import { useZapcashSsoRedirect } from '@/hooks/use-zapcash-sso-redirect';
@@ -69,7 +69,7 @@ useEffect(() => {
     const offerLenderName = offer.lenderName?.toLowerCase();
     const isFederationBankLender = isFederationBank(offerLenderName || '');
     const isZapcashLender = isZapcash(offerLenderName || '');
-    const isLntOffer = offerLenderName === 'lnt' || offerLenderName === 'upswing_lnt';
+    const isLntOffer = isLnt(offerLenderName);
     const mobile: string | undefined = getCookie(STORAGE_MOBILE) as string | undefined;
     const token: string | undefined = getCookie(STORAGE_AUTH_TOKEN) as string | undefined;
 
@@ -83,6 +83,13 @@ useEffect(() => {
       return;
     }
 
+    if (isLntOffer) {
+      if (mobile) {
+        void forwardLenderRedirectByPhone(mobile, LNT_LENDER_NAME, token);
+      }
+      return;
+    }
+
     if (!utmLink) {
       return;
     }
@@ -91,10 +98,6 @@ useEffect(() => {
 
     if (lenderName && mobile && !isUtmClicked) {
       //void updateUtmClicked(mobile, lenderName, token);
-    }
-
-    if (mobile && isLntOffer) {
-      void notifyForwardNavigationEvent(mobile, utmLink);
     }
 
     window.open(utmLink, '_blank'); 
