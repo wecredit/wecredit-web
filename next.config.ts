@@ -31,6 +31,10 @@ const nextConfig: NextConfig = {
           source: '/sitemap-loans.xml',
           destination: '/sitemap-loans/sitemap.xml',
         },
+        {
+          source: '/sitemap-loan-apps.xml',
+          destination: '/sitemap-loan-apps/sitemap.xml',
+        },
       ],
     };
   },
