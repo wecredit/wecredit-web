@@ -8,6 +8,8 @@ export const HEADER_CONTENT_TYPE = 'Content-Type';
 export const HEADER_AUTHORIZATION = 'Authorization';
 export const HEADER_AGENT_HOST = 'X-Agent-Host';
 export const HEADER_MOBILE = 'mobile';
+/** Finbox redirect forward API — value from check-status-all `lenderReferenceId`. */
+export const HEADER_CUSTOMER_ID = 'customerid';
 /** CamelCase lender header expected by upswing-redirect-by-phone (distinct from lowercase `lendername`). */
 export const HEADER_LENDER_NAME = 'lenderName';
 
@@ -106,6 +108,8 @@ export const ENDPOINTS = {
     FEDERALBANK_REDIRECT: 'federalbank-redirect',
     /** Zapcash SSO redirect via /api/forward — JSON with utmLink */
     ZAPCASH_SSO_REDIRECT: 'zapcash-sso-redirect',
+    /** Finbox redirect via /api/forward — requires `customerid` header */
+    FINBOX_REDIRECT: 'finbox-redirect',
   },
 
   AUTH: {
