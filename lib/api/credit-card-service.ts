@@ -1,7 +1,7 @@
 /**
  * Credit card APIs:
  * - get-lenders?lenderType=creditcard (public list)
- * - get-creditcard-leads (check existing user details; requires auth)
+ * - get-creditcard-lead (check existing user details; requires auth)
  * - credit-card-lead (submit application form; requires auth)
  */
 
@@ -75,7 +75,7 @@ function hasSuccessfulLeadStatus(loanFormStatus: unknown): boolean {
 }
 
 /**
- * Resolves the lead payload from get-creditcard-leads.
+ * Resolves the lead payload from get-creditcard-lead.
  * API nests customer fields under `data` when a lead already exists.
  */
 function getCreditCardLeadPayload(responseData: unknown): Record<string, unknown> | null {
@@ -147,7 +147,7 @@ export async function fetchCreditCardLenders(
 
 /**
  * Checks whether the user already has credit-card lead / profile details.
- * Uses get-creditcard-leads with creditCardName header.
+ * Uses get-creditcard-lead with creditCardName header.
  */
 export async function fetchCreditCardLeadStatus(
   creditCardName: string,
@@ -164,7 +164,7 @@ export async function fetchCreditCardLeadStatus(
     return { hasExistingLead: false, error: 'Invalid mobile number' };
   }
   const requestBody = {
-    endpoint: ENDPOINTS.FORWARD.GET_CREDITCARD_LEADS,
+    endpoint: ENDPOINTS.FORWARD.GET_CREDITCARD_LEAD,
     partnerCode: getEffectivePartnerCode(),
   };
   try {

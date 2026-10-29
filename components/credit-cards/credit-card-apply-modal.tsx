@@ -1,7 +1,7 @@
 'use client';
 
 /**
- * After Apply Now + login: check get-creditcard-leads.
+ * After Apply Now + login: check get-creditcard-lead.
  * Existing details → open get-lenders utmLink.
  * No details → show application form → credit-card-lead → open utmLink.
  */

@@ -39,7 +39,7 @@ type PendingActionType =
   | 'submit_home_loan'
   | 'submit_gold_loan'
   | 'submit_primepl_lead'
-  /** After OTP, call get-creditcard-leads then open the credit card apply URL. */
+  /** After OTP, call get-creditcard-lead then open the credit card apply URL. */
   | 'apply_credit_card';
 
 /**

@@ -12,7 +12,7 @@ export const HEADER_MOBILE = 'mobile';
 export const HEADER_CUSTOMER_ID = 'customerid';
 /** CamelCase lender header expected by upswing-redirect-by-phone (distinct from lowercase `lendername`). */
 export const HEADER_LENDER_NAME = 'lenderName';
-/** Credit card name header for get-creditcard-leads on Apply Now. */
+/** Credit card name header for get-creditcard-lead on Apply Now. */
 export const HEADER_CREDIT_CARD_NAME = 'creditCardName';
 
 /** Lender code for LNT redirect-by-phone deep link */
@@ -116,7 +116,7 @@ export const ENDPOINTS = {
     /** Finbox redirect via /api/forward — requires `customerid` header */
     FINBOX_REDIRECT: 'finbox-redirect',
     /** Fetch existing credit-card user/lead details via creditCardName header */
-    GET_CREDITCARD_LEADS: 'get-creditcard-leads',
+    GET_CREDITCARD_LEAD: 'get-creditcard-lead',
     /** Submit credit card application form */
     CREDIT_CARD_LEAD: 'credit-card-lead',
   },
