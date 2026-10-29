@@ -41,6 +41,7 @@ export const HEADER_LINKS: NavigationLink[] = [
   { id: 1, label: 'Home', url: '/', openInNewTab: false, children: [] },
   LOANS_LINK,
   TOOLS_LINK,
+  { id: 7, label: 'Credit Cards', url: '/credit-cards', openInNewTab: false, children: [] },
   { id: 3, label: 'Blogs', url: '/blog', openInNewTab: false, children: [] },
   { id: 4, label: 'About Us', url: '/about-us/', openInNewTab: false, children: [] },
 ];

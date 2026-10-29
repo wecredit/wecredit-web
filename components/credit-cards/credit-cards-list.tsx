@@ -1,39 +1,52 @@
 'use client';
 
 /**
- * Renders a responsive grid of credit card offer cards.
- * Assigns "Popular" to first card (SBI SimplyCLICK) and "Top Choices" to SBI ELITE.
+ * Fetches and renders credit card offers from get-lenders?lenderType=creditcard.
  */
 
-import { CREDIT_CARDS } from '@/lib/constants/credit-card-data';
+import type { ReactNode } from 'react';
+import { useCreditCardLenders } from '@/hooks/use-credit-card-lenders';
 import CreditCardItem from './credit-card-item';
+import { PageLoader } from '@/components/shared/page-loader';
 
-const BADGE_POPULAR = 'Popular';
-const BADGE_TOP_CHOICES = 'Top Choices';
-const TITLE_ELITE = 'SBI ELITE';
+const LIST_STATUS = {
+  LOADING: 'loading',
+  EMPTY: 'empty',
+  ERROR: 'error',
+  SUCCESS: 'success',
+} as const;
 
 const CreditCardsList = (): React.ReactNode => {
-  if (CREDIT_CARDS.length === 0) {
-    return (
+  const { offers, status } = useCreditCardLenders();
+
+  let content: ReactNode;
+  if (status === LIST_STATUS.LOADING) {
+    content = <PageLoader />;
+  } else if (status === LIST_STATUS.ERROR) {
+    content = (
+      <div className="mx-4 my-4 lg:mt-20 max-w-6xl mx-auto flex min-h-[200px] items-center justify-center">
+        <p className="text-muted-foreground text-lg">
+          Unable to load credit cards. Please try again later.
+        </p>
+      </div>
+    );
+  } else if (status === LIST_STATUS.EMPTY) {
+    content = (
       <div className="mx-4 my-4 lg:mt-20 max-w-6xl mx-auto flex min-h-[200px] items-center justify-center">
         <p className="text-muted-foreground text-lg">Coming Soon</p>
       </div>
     );
+  } else {
+    content = (
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 justify-items-center mx-4 my-4 lg:mt-20 max-w-6xl mx-auto">
+        {offers.map((card) => (
+          <CreditCardItem key={card.id} card={card} />
+        ))}
+      </div>
+    );
   }
 
-  return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 justify-items-center mx-4 my-4 lg:mt-20 max-w-6xl mx-auto">
-      {CREDIT_CARDS.map((card, index) => {
-        const isFirst = index === 0;
-        const isElite = card.title === TITLE_ELITE;
-        const badge = isFirst ? BADGE_POPULAR : isElite ? BADGE_TOP_CHOICES : undefined;
-
-        return (
-          <CreditCardItem key={card.title} card={card} badge={badge} />
-        );
-      })}
-    </div>
-  );
+  return content;
 };
 
 export default CreditCardsList;
