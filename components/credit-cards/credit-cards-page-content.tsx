@@ -1,12 +1,12 @@
 'use client';
 
 /**
- * Credit cards page content: header, card list, and FAQ section.
- * Renders static credit card offers with external application links.
+ * Credit cards page: list from get-lenders, FAQ, and apply modal.
  */
 
 import { FaqSection, PageHeading } from '@/components/shared';
 import CreditCardsList from './credit-cards-list';
+import CreditCardApplyModal from './credit-card-apply-modal';
 
 const CreditCardsPageContent = (): React.ReactNode => {
   return (
@@ -14,14 +14,13 @@ const CreditCardsPageContent = (): React.ReactNode => {
       <div className="py-8 sm:py-10 pt-20">
         <PageHeading className="sr-only">Best Credit Card Offers in India</PageHeading>
 
-        {/* Credit cards grid */}
         <section className="mb-12 sm:mb-16 px-4" aria-label="Credit card offers">
           <CreditCardsList />
         </section>
 
-        {/* FAQ section */}
         <FaqSection />
       </div>
+      <CreditCardApplyModal />
     </div>
   );
 };

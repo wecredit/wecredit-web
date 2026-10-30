@@ -19,8 +19,10 @@ import { useLoanApplicationStore } from '@/stores/loan-application-store';
 import { buildInternalLenderNavigationHref } from '@/lib/utils/internal-lender-navigation';
 import { forwardLenderRedirectByPhone } from '@/lib/api/wecredit';
 import { LNT_LENDER_NAME, STORAGE_AUTH_TOKEN, STORAGE_MOBILE } from '@/lib/constants/api-keys';
+import { CREDIT_CARD_APPLY_CONTINUE_EVENT } from '@/lib/constants/events';
 import { isLnt } from '@/lib/utils/common-helper';
 import { getCookie } from 'cookies-next';
+import { useCreditCardApplyStore } from '@/stores/credit-card-apply-store';
 
 type SubmitFn<TPayload> = (payload: TPayload) => Promise<boolean>;
 
@@ -164,6 +166,23 @@ export const usePostLogin = (): void => {
             });
           }
         );
+        break;
+      case 'apply_credit_card':
+        if (!action.creditCardName || !action.href) {
+          console.warn(
+            '[AuthModal] usePostLogin: apply_credit_card missing creditCardName or href'
+          );
+          break;
+        }
+        useCreditCardApplyStore.getState().startApply({
+          id: action.lenderId || action.creditCardName,
+          name: action.creditCardName,
+          title: action.lenderName || action.creditCardName,
+          link: action.href,
+          intro: '',
+          imageUrl: '',
+        });
+        window.dispatchEvent(new CustomEvent(CREDIT_CARD_APPLY_CONTINUE_EVENT));
         break;
       default:
         console.warn('[AuthModal] Unknown pending action type:', action.type);
