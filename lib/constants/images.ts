@@ -74,6 +74,8 @@ export const IMAGES = {
 
     // PL_BY_ONDC: `${BUCKET_IMAGE_URL}/pl-by-ondc.svg`,
     CREDIT_CARD: `${BUCKET_IMAGE_URL}/credit-card-icon.png`,
+    /** Default offer image on /credit-cards when lender logo/imageUrl is empty */
+    CREDIT_CARD_OFFER: '/assets/images/credit-card.jpg',
     DOCUMENT: `${BUCKET_IMAGE_URL}/document-icon.png`,
     OTP: `${BUCKET_IMAGE_URL}/otp-icon.png`,
     WALLET: `${BUCKET_IMAGE_URL}/wallet-icon.png`,

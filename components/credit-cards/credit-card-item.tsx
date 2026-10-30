@@ -12,7 +12,8 @@ import { IMAGES } from '@/lib/constants/images';
 
 const CreditCardItem = ({ card }: CreditCardItemProps): React.ReactNode => {
   const { handleApplyNow } = useCreditCardApply();
-  const imageSrc = card.imageUrl || IMAGES.ICONS.CREDIT_CARD;
+  const hasLenderImage = Boolean(card.imageUrl);
+  const imageSrc = card.imageUrl || IMAGES.ICONS.CREDIT_CARD_OFFER;
 
   let introContent: React.ReactNode = null;
   if (card.intro) {
@@ -23,16 +24,23 @@ const CreditCardItem = ({ card }: CreditCardItemProps): React.ReactNode => {
     );
   }
 
+  let imageClassName: string;
+  if (hasLenderImage) {
+    imageClassName = 'absolute inset-0 w-full h-full object-contain p-4';
+  } else {
+    imageClassName = 'absolute inset-0 w-full h-full object-cover';
+  }
+
   return (
     <article
       className="w-full relative bg-white rounded-xl shadow overflow-hidden flex flex-col transition-transform hover:scale-[1.02]"
       data-card-title={card.title}
     >
-      <div className="relative w-full h-48 shrink-0 overflow-hidden bg-wc-blue-50 flex items-center justify-center">
+      <div className="relative w-full h-48 shrink-0 overflow-hidden bg-zinc-900">
         <img
           src={imageSrc}
           alt={card.title}
-          className="max-h-24 max-w-[70%] object-contain"
+          className={imageClassName}
           loading="lazy"
         />
       </div>
