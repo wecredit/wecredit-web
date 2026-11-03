@@ -1,0 +1,15 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.wecredit.Wecredit",
+      "sha256_cert_fingerprints": [
+        "B1:EF:2E:31:8A:9B:FD:9F:1F:64:D4:E3:23:CC:36:09:77:A7:71:AA:1E:7D:6F:19:9E:58:66:29:C5:E9:F8:89",
+        "64:BC:1C:86:72:78:32:BB:E8:BC:90:48:96:8A:38:16:59:5B:95:69:59:58:16:0F:B8:B6:2A:27:AB:A2:06:73"
+      ]
+    }
+  }
+]
