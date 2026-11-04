@@ -38,7 +38,9 @@ type PendingActionType =
   | 'submit_car_loan'
   | 'submit_home_loan'
   | 'submit_gold_loan'
-  | 'submit_primepl_lead';
+  | 'submit_primepl_lead'
+  /** After OTP, call get-creditcard-lead then open the credit card apply URL. */
+  | 'apply_credit_card';
 
 /**
  * Pending action data structure
@@ -53,6 +55,8 @@ interface PendingAction {
   lenderName?: string;
   /** Target URL to navigate to (navigate_to_offer / check_eligibility) */
   href?: string;
+  /** Credit card name for apply_credit_card (`creditCardName` header) */
+  creditCardName?: string;
   /** Form payload for submit_business_loan - used after OTP to call bl-leads API */
   businessLoanPayload?: BusinessLoanEnquiryPayload;
   /** Form payload for submit_car_loan - used after OTP to call car loan API */

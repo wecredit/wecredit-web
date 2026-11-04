@@ -76,6 +76,8 @@ export type WcStatus =
 export interface LenderOfferStatus {
   /** Lender name/identifier */
   lenderName: string;
+  /** Sub-lender customer reference (e.g. Finbox `customerid` for forward redirect). */
+  lenderReferenceId?: string;
   /** Lender name/identifier */
   uptoAmount?: string;
   /** WeCredit application status */

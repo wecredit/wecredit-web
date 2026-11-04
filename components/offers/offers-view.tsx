@@ -20,12 +20,12 @@ import {
 } from '@/components/offers';
 import { UnmatchedOffersSection } from './unmatched-offers-section';
 import type { LenderOfferStatus } from '@/types/wecredit';
-import { forwardLenderRedirectByPhone, forwardUpswingRedirect, updateUtmClicked } from '@/lib/api/wecredit';
+import { forwardFinboxRedirect, forwardLenderRedirectByPhone, forwardUpswingRedirect, updateUtmClicked } from '@/lib/api/wecredit';
 import { LNT_LENDER_NAME, STORAGE_AUTH_TOKEN, STORAGE_MOBILE } from '@/lib/constants/api-keys';
 import { ActionButton, PageHeader } from '@/components/shared';
 import { useOfferStore } from '@/stores/offer-store';
 import { useLoanApplicationStore } from '@/stores/loan-application-store';
-import { isFederationBank, isLnt, isUpswingRedirectAllowed, isZapcash, mapingLenderNameToLenderCode, parseAmountToNumber } from '@/lib/utils/common-helper';
+import { isFederationBank, isFinbox, isLnt, isUpswingRedirectAllowed, isZapcash, mapingLenderNameToLenderCode, parseAmountToNumber } from '@/lib/utils/common-helper';
 import { useInfoSearchParams } from '@/hooks/use-info-search-params';
 import { useUrlParamsStore } from '@/stores/url-params-store';
 import { pushOfferpageEvent } from '@/lib/gtm';
@@ -34,6 +34,7 @@ import { useFederationBankRedirect } from '@/hooks/use-federation-bank-redirect'
 import { FederationBankRedirectOverlay } from '@/components/offers/federation-bank-redirect-overlay';
 import { useZapcashSsoRedirect } from '@/hooks/use-zapcash-sso-redirect';
 import { ZapcashSsoRedirectOverlay } from '@/components/offers/zapcash-sso-redirect-overlay';
+import { toast } from 'sonner';
 
 const OFFER_CONTENT_STATUS = {
   ALL_OFFERS: 'all-offers',
@@ -197,6 +198,7 @@ export const OffersView = () => {
     const isUpswingRedirectAllowedLender = isUpswingRedirectAllowed(offerLenderName);
     const isFederationBankLender = isFederationBank(offerLenderName);
     const isZapcashLender = isZapcash(offerLenderName);
+    const isFinboxLender = isFinbox(offerLenderName || '');
     // For non-INITIATED offers in explore screen, navigate to status page
     if (offer.wcStatus !== 'INITIATED') {
       router.push(buildOffersPathWithQuery('/offers/status', searchParams));
@@ -218,6 +220,22 @@ export const OffersView = () => {
 
     if (isZapcashLender) {
       void handleZapcashSsoRedirect();
+      return;
+    }
+
+    if (isFinboxLender) {
+      const lenderReferenceId = offer.lenderReferenceId?.trim();
+      if (!lenderReferenceId) {
+        toast.error('Unable to start Finbox journey. Please refresh and try again.');
+        return;
+      }
+      if (lenderName && mobile) {
+        void updateUtmClicked(mobile, lenderName, token);
+      }
+      void forwardFinboxRedirect(mobile, lenderReferenceId, token);
+      setTimeout(() => {
+        fetchOffers();
+      }, 2000);
       return;
     }
 
