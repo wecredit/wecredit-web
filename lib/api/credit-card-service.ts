@@ -3,6 +3,7 @@
  * - get-lenders?lenderType=creditcard (public list)
  * - get-creditcard-lead (check existing user details; requires auth)
  * - credit-card-lead (submit application form; requires auth)
+ * - creditcard-redirect-url (latest partner redirect; requires auth)
  */
 
 import { getCookie } from 'cookies-next';
@@ -14,6 +15,7 @@ import {
   STORAGE_AUTH_TOKEN,
   STORAGE_MOBILE,
 } from '@/lib/constants/api-keys';
+import { sanitizeCreditCardUtmLink } from '@/lib/utils/credit-card-lenders';
 import { withApiLogging } from '@/lib/utils/api-logger';
 import { getEffectivePartnerCode } from '@/lib/utils/effective-partner-code';
 import { getErrorMessage, isAbortError } from '@/lib/utils/error-helpers';
@@ -27,6 +29,7 @@ import type {
   CreditCardLeadPayload,
   CreditCardLeadStatusResult,
   CreditCardLendersResponse,
+  CreditCardRedirectUrlResult,
 } from '@/types/credit-card';
 
 const LENDER_TYPE_CREDIT_CARD = 'creditcard';
@@ -87,6 +90,39 @@ function getCreditCardLeadPayload(responseData: unknown): Record<string, unknown
     return record.data as Record<string, unknown>;
   }
   return record;
+}
+
+function parseCreditCardRedirectUrl(responseData: unknown): string | undefined {
+  if (typeof responseData !== 'object' || responseData === null) {
+    return undefined;
+  }
+  const record = responseData as Record<string, unknown>;
+  if (typeof record.data === 'object' && record.data !== null) {
+    const nested = record.data as { redirectUrl?: unknown };
+    if (
+      typeof nested.redirectUrl === 'string' &&
+      nested.redirectUrl.trim().length > 0
+    ) {
+      return nested.redirectUrl.trim();
+    }
+  }
+  if (
+    typeof record.redirectUrl === 'string' &&
+    record.redirectUrl.trim().length > 0
+  ) {
+    return record.redirectUrl.trim();
+  }
+  return undefined;
+}
+
+function getCreditCardAuthMobile(): string | null {
+  const mobileCookie = getCookie(STORAGE_MOBILE);
+  const mobile =
+    typeof mobileCookie === 'string' ? mobileCookie.replace(/\D/g, '') : '';
+  if (!/^[0-9]{10}$/.test(mobile)) {
+    return null;
+  }
+  return mobile;
 }
 
 function responseHasCustomerDetails(responseData: unknown): boolean {
@@ -157,10 +193,8 @@ export async function fetchCreditCardLeadStatus(
   if (!name) {
     return { hasExistingLead: false, error: 'Credit card name is required' };
   }
-  const mobileCookie = getCookie(STORAGE_MOBILE);
-  const mobile =
-    typeof mobileCookie === 'string' ? mobileCookie.replace(/\D/g, '') : '';
-  if (!/^[0-9]{10}$/.test(mobile)) {
+  const mobile = getCreditCardAuthMobile();
+  if (!mobile) {
     return { hasExistingLead: false, error: 'Invalid mobile number' };
   }
   const requestBody = {
@@ -217,6 +251,87 @@ export async function fetchCreditCardLeadStatus(
       error: getErrorMessage(error, 'Failed to check credit card details'),
     };
   }
+}
+
+/**
+ * Fetches the latest partner redirect URL via creditcard-redirect-url.
+ * Uses mobile + creditCardName headers (same as get-creditcard-lead).
+ */
+export async function fetchCreditCardRedirectUrl(
+  creditCardName: string,
+  signal?: AbortSignal
+): Promise<CreditCardRedirectUrlResult> {
+  const name = creditCardName.trim();
+  if (!name) {
+    return { error: 'Credit card name is required' };
+  }
+  const mobile = getCreditCardAuthMobile();
+  if (!mobile) {
+    return { error: 'Invalid mobile number' };
+  }
+  const requestBody = {
+    endpoint: ENDPOINTS.FORWARD.CREDITCARD_REDIRECT_URL,
+    partnerCode: getEffectivePartnerCode(),
+  };
+  try {
+    const response = await fetch(CREDIT_CARD_FORWARD_ENDPOINT, {
+      method: 'POST',
+      headers: buildCreditCardAuthHeaders(mobile, {
+        [HEADER_CREDIT_CARD_NAME]: name,
+      }),
+      body: JSON.stringify(requestBody),
+      signal,
+      cache: 'no-store',
+    });
+    let responseData: unknown;
+    try {
+      responseData = await response.json();
+    } catch {
+      responseData = undefined;
+    }
+    const redirectUrl = parseCreditCardRedirectUrl(responseData);
+    if (redirectUrl) {
+      return { redirectUrl };
+    }
+    if (response.ok) {
+      return { error: 'Partner redirect URL was not returned' };
+    }
+    const errorMessage =
+      getResponseMessage(responseData) ||
+      `Request failed with status ${response.status}`;
+    return { error: errorMessage };
+  } catch (error) {
+    if (isAbortError(error)) {
+      return {};
+    }
+    return {
+      error: getErrorMessage(error, 'Failed to fetch credit card redirect URL'),
+    };
+  }
+}
+
+/**
+ * Resolves partner redirect: creditcard-redirect-url first, then get-lenders utmLink fallback.
+ */
+export async function resolveCreditCardPartnerRedirect(
+  creditCardName: string,
+  fallbackUtmLink: string,
+  signal?: AbortSignal
+): Promise<{ redirectUrl: string } | { error: string }> {
+  const result = await fetchCreditCardRedirectUrl(creditCardName, signal);
+  if (result.redirectUrl) {
+    const url = sanitizeCreditCardUtmLink(result.redirectUrl);
+    if (url) {
+      return { redirectUrl: url };
+    }
+  }
+  const fallback = sanitizeCreditCardUtmLink(fallbackUtmLink);
+  if (fallback) {
+    return { redirectUrl: fallback };
+  }
+  return {
+    error: result.error ?? 'Unable to open credit card application',
+  };
 }
 
 /**

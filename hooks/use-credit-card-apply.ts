@@ -2,7 +2,7 @@
 
 /**
  * Apply Now: login gate, then open credit-card apply modal
- * (get-creditcard-lead check → form or utmLink redirect).
+ * (get-creditcard-lead check → form or creditcard-redirect-url).
  */
 
 import { useCallback } from 'react';

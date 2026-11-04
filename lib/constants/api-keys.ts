@@ -119,6 +119,8 @@ export const ENDPOINTS = {
     GET_CREDITCARD_LEAD: 'get-creditcard-lead',
     /** Submit credit card application form */
     CREDIT_CARD_LEAD: 'credit-card-lead',
+    /** Latest partner redirect URL after lead exists or is created */
+    CREDITCARD_REDIRECT_URL: 'creditcard-redirect-url',
   },
 
   AUTH: {

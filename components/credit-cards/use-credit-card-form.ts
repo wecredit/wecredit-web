@@ -14,7 +14,7 @@ import type { CreditCardLeadPayload } from '@/types/credit-card';
 
 interface UseCreditCardFormOptions {
   creditCardName: string;
-  onSuccess?: () => void;
+  onSuccess?: () => void | Promise<void>;
 }
 
 interface UseCreditCardFormReturn {
@@ -125,7 +125,7 @@ export const useCreditCardForm = (
     try {
       const success = await submitCreditCardLead(payload);
       if (success) {
-        onSuccess?.();
+        await onSuccess?.();
         setFormValues(DEFAULT_CREDIT_CARD_FORM_STATE);
         setFormErrors({});
       }

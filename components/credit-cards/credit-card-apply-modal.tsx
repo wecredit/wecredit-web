@@ -2,13 +2,17 @@
 
 /**
  * After Apply Now + login: check get-creditcard-lead.
- * Existing details → open get-lenders utmLink.
- * No details → show application form → credit-card-lead → open utmLink.
+ * Existing details → creditcard-redirect-url (fallback: get-lenders utmLink).
+ * No details → form → credit-card-lead → creditcard-redirect-url.
  */
 
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { toast } from 'sonner';
 import { useBodyScrollLock } from '@/hooks/use-body-scroll-lock';
-import { fetchCreditCardLeadStatus } from '@/lib/api/credit-card-service';
+import {
+  fetchCreditCardLeadStatus,
+  resolveCreditCardPartnerRedirect,
+} from '@/lib/api/credit-card-service';
 import { isAbortError } from '@/lib/utils/error-helpers';
 import { redirectToCreditCardUtmLink } from '@/lib/utils/credit-card-lenders';
 import { useLoadingStore } from '@/stores/loading-store';
@@ -23,14 +27,45 @@ const CreditCardApplyModal = (): React.ReactNode => {
   const { show: showLoading, hide: hideLoading } = useLoadingStore();
   const [status, setStatus] = useState<CreditCardApplyModalStatus>('checking');
   const checkedOfferIdRef = useRef<string | null>(null);
+  const redirectAbortRef = useRef<AbortController | null>(null);
   useBodyScrollLock(isModalOpen);
 
-  const openUtmLinkAndClose = useCallback((): void => {
-    const link = useCreditCardApplyStore.getState().selectedOffer?.link ?? '';
-    closeApply();
-    // Same-tab redirect to get-lenders utmLink (e.g. Kiwi) — avoids popup blockers after async checks.
-    redirectToCreditCardUtmLink(link);
-  }, [closeApply]);
+  const openPartnerRedirectAndClose = useCallback(async (): Promise<void> => {
+    const offer = useCreditCardApplyStore.getState().selectedOffer;
+    if (!offer) {
+      return;
+    }
+    redirectAbortRef.current?.abort();
+    const controller = new AbortController();
+    redirectAbortRef.current = controller;
+    showLoading({
+      message: 'Redirecting you to the bank...',
+      subtext: 'Please wait while we prepare your application link.',
+    });
+    try {
+      const result = await resolveCreditCardPartnerRedirect(
+        offer.name,
+        offer.link,
+        controller.signal
+      );
+      if (controller.signal.aborted) {
+        return;
+      }
+      if ('error' in result) {
+        toast.error(result.error, {
+          description: 'Unable to continue your credit card application.',
+        });
+        closeApply();
+        return;
+      }
+      closeApply();
+      redirectToCreditCardUtmLink(result.redirectUrl);
+    } finally {
+      if (!controller.signal.aborted) {
+        hideLoading();
+      }
+    }
+  }, [closeApply, hideLoading, showLoading]);
 
   useEffect(() => {
     if (!isModalOpen || !selectedOffer) {
@@ -55,7 +90,8 @@ const CreditCardApplyModal = (): React.ReactNode => {
           return;
         }
         if (result.hasExistingLead) {
-          openUtmLinkAndClose();
+          hideLoading();
+          await openPartnerRedirectAndClose();
           return;
         }
         setStatus('form');
@@ -71,12 +107,13 @@ const CreditCardApplyModal = (): React.ReactNode => {
     void runCheck();
     return () => {
       controller.abort();
+      redirectAbortRef.current?.abort();
       hideLoading();
     };
   }, [
     hideLoading,
     isModalOpen,
-    openUtmLinkAndClose,
+    openPartnerRedirectAndClose,
     selectedOffer,
     showLoading,
   ]);
@@ -94,7 +131,7 @@ const CreditCardApplyModal = (): React.ReactNode => {
         creditCardName={selectedOffer.name}
         creditCardTitle={selectedOffer.title}
         onClose={closeApply}
-        onSuccess={openUtmLinkAndClose}
+        onSuccess={openPartnerRedirectAndClose}
         isModal
       />
     );
