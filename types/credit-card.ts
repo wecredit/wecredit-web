@@ -54,6 +54,12 @@ export interface CreditCardLeadStatusResult {
   error?: string;
 }
 
+/** Result of creditcard-redirect-url forward call */
+export interface CreditCardRedirectUrlResult {
+  redirectUrl?: string;
+  error?: string;
+}
+
 /** Payload for credit-card-lead submit */
 export interface CreditCardLeadPayload {
   customerName: string;

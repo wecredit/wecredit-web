@@ -26,7 +26,7 @@ export function sanitizeCreditCardUtmLink(utmLink: string): string {
 }
 
 /**
- * Navigates the current tab to the get-lenders utmLink.
+ * Navigates the current tab to a credit card partner URL (redirect-url or utmLink).
  */
 export function redirectToCreditCardUtmLink(utmLink: string): void {
   const link = sanitizeCreditCardUtmLink(utmLink);
