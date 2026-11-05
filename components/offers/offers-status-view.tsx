@@ -79,11 +79,6 @@ useEffect(() => {
       return;
     }
 
-    if (isZapcashLender) {
-      void handleZapcashSsoRedirect();
-      return;
-    }
-
     if (isLntOffer) {
       if (mobile) {
         void forwardLenderRedirectByPhone(mobile, LNT_LENDER_NAME, token);
@@ -110,11 +105,10 @@ useEffect(() => {
     if (!utmLink) {
       return;
     }
-    const lenderName: string = offer.lenderName || '';
-    const isUtmClicked: boolean = offer.wcStatus === 'UTM_CLICKED';
 
-    if (lenderName && mobile && !isUtmClicked) {
-      //void updateUtmClicked(mobile, lenderName, token);
+    if (isZapcashLender) {
+      void handleZapcashSsoRedirect();
+      return;
     }
 
     window.open(utmLink, '_blank'); 

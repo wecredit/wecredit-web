@@ -218,11 +218,6 @@ export const OffersView = () => {
       return;
     }
 
-    if (isZapcashLender) {
-      void handleZapcashSsoRedirect();
-      return;
-    }
-
     if (isFinboxLender) {
       const lenderReferenceId = offer.lenderReferenceId?.trim();
       if (!lenderReferenceId) {
@@ -259,6 +254,11 @@ export const OffersView = () => {
     // Update UTM clicked status
     if (lenderName && mobile) {
       void updateUtmClicked(mobile, lenderName, token);
+    }
+
+    if (isZapcashLender) {
+      void handleZapcashSsoRedirect();
+      return;
     }
 
     window.open(utmLink, '_blank');

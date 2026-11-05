@@ -195,10 +195,12 @@ export function isMultiLenderCreditCardSectionComplete(
 }
 
 /** Input sanitization mode for free-text form fields. */
-export type FormTextInputMode = 'plain' | 'email';
+export type FormTextInputMode = 'plain' | 'address' | 'email';
 
 const EMOJI_REGEX = /\p{Extended_Pictographic}/gu;
 const PLAIN_TEXT_CHAR_REGEX = /[^a-zA-Z0-9\s]/g;
+/** Address fields also allow comma and ampersand (e.g. "12 MG Road, Bengaluru"). */
+const ADDRESS_TEXT_CHAR_REGEX = /[^a-zA-Z0-9\s,&]/g;
 
 export const FORM_TEXT_VALIDATION_MESSAGES = {
   emoji: 'Emojis are not allowed',
@@ -221,6 +223,11 @@ export function sanitizePlainTextInput(value: string): string {
   return stripEmojis(value).replace(PLAIN_TEXT_CHAR_REGEX, '');
 }
 
+/** Keeps letters, digits, spaces, commas, and ampersands. */
+export function sanitizeAddressTextInput(value: string): string {
+  return stripEmojis(value).replace(ADDRESS_TEXT_CHAR_REGEX, '');
+}
+
 /** Strips emojis only; preserves standard email characters. */
 export function sanitizeEmailTextInput(value: string): string {
   return stripEmojis(value);
@@ -231,6 +238,9 @@ export function sanitizeFormTextInput(value: string, mode: FormTextInputMode): s
   if (mode === 'email') {
     return sanitizeEmailTextInput(value);
   }
+  if (mode === 'address') {
+    return sanitizeAddressTextInput(value);
+  }
   return sanitizePlainTextInput(value);
 }
 
@@ -240,7 +250,10 @@ export function containsDisallowedSpecialChars(value: string, mode: FormTextInpu
   if (mode === 'email') {
     return false;
   }
-  return PLAIN_TEXT_CHAR_REGEX.test(stripEmojis(value));
+  const disallowedRegex =
+    mode === 'address' ? ADDRESS_TEXT_CHAR_REGEX : PLAIN_TEXT_CHAR_REGEX;
+  disallowedRegex.lastIndex = 0;
+  return disallowedRegex.test(stripEmojis(value));
 }
 
 /**
@@ -252,7 +265,10 @@ export function getTextInputValidationError(value: string, mode: FormTextInputMo
   if (containsEmoji(value)) {
     return FORM_TEXT_VALIDATION_MESSAGES.emoji;
   }
-  if (mode === 'plain' && containsDisallowedSpecialChars(value, mode)) {
+  if (
+    (mode === 'plain' || mode === 'address') &&
+    containsDisallowedSpecialChars(value, mode)
+  ) {
     return FORM_TEXT_VALIDATION_MESSAGES.specialCharacters;
   }
   return '';

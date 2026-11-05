@@ -84,6 +84,7 @@ const PrimeplLeadFields = ({
           placeholder="House no., street, city"
           error={formErrors.address}
           required
+          textMode="address"
           autoComplete="street-address"
         />
       </div>

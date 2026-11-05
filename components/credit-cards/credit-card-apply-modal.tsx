@@ -9,6 +9,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import { useBodyScrollLock } from '@/hooks/use-body-scroll-lock';
+import { useCloseOnBrowserBack } from '@/hooks/use-close-on-browser-back';
 import {
   fetchCreditCardLeadStatus,
   resolveCreditCardPartnerRedirect,
@@ -18,17 +19,26 @@ import { redirectToCreditCardUtmLink } from '@/lib/utils/credit-card-lenders';
 import { useLoadingStore } from '@/stores/loading-store';
 import { useCreditCardApplyStore } from '@/stores/credit-card-apply-store';
 import { LoadingScreen } from '@/components/shared/loading-screen';
+import { CreditCardRedirectLoading } from '@/components/credit-cards/credit-card-redirect-loading';
 import CreditCardForm from './credit-card-form';
 
 type CreditCardApplyModalStatus = 'checking' | 'form';
+
+const CREDIT_CARD_APPLY_MODAL_HISTORY_KEY = 'creditCardApplyModal';
 
 const CreditCardApplyModal = (): React.ReactNode => {
   const { selectedOffer, isModalOpen, closeApply } = useCreditCardApplyStore();
   const { show: showLoading, hide: hideLoading } = useLoadingStore();
   const [status, setStatus] = useState<CreditCardApplyModalStatus>('checking');
+  const [isRedirecting, setIsRedirecting] = useState(false);
   const checkedOfferIdRef = useRef<string | null>(null);
   const redirectAbortRef = useRef<AbortController | null>(null);
   useBodyScrollLock(isModalOpen);
+  const { requestClose } = useCloseOnBrowserBack({
+    isOpen: isModalOpen,
+    onClose: closeApply,
+    historyKey: CREDIT_CARD_APPLY_MODAL_HISTORY_KEY,
+  });
 
   const openPartnerRedirectAndClose = useCallback(async (): Promise<void> => {
     const offer = useCreditCardApplyStore.getState().selectedOffer;
@@ -38,38 +48,31 @@ const CreditCardApplyModal = (): React.ReactNode => {
     redirectAbortRef.current?.abort();
     const controller = new AbortController();
     redirectAbortRef.current = controller;
-    showLoading({
-      message: 'Redirecting you to the bank...',
-      subtext: 'Please wait while we prepare your application link.',
-    });
-    try {
-      const result = await resolveCreditCardPartnerRedirect(
-        offer.name,
-        offer.link,
-        controller.signal
-      );
-      if (controller.signal.aborted) {
-        return;
-      }
-      if ('error' in result) {
-        toast.error(result.error, {
-          description: 'Unable to continue your credit card application.',
-        });
-        closeApply();
-        return;
-      }
-      closeApply();
-      redirectToCreditCardUtmLink(result.redirectUrl);
-    } finally {
-      if (!controller.signal.aborted) {
-        hideLoading();
-      }
+    setIsRedirecting(true);
+    const result = await resolveCreditCardPartnerRedirect(
+      offer.name,
+      offer.link,
+      controller.signal
+    );
+    if (controller.signal.aborted) {
+      return;
     }
-  }, [closeApply, hideLoading, showLoading]);
+    if ('error' in result) {
+      setIsRedirecting(false);
+      toast.error(result.error, {
+        description: 'Unable to continue your credit card application.',
+      });
+      closeApply();
+      return;
+    }
+    // Keep redirect UI mounted until the browser leaves this page.
+    redirectToCreditCardUtmLink(result.redirectUrl);
+  }, [closeApply]);
 
   useEffect(() => {
     if (!isModalOpen || !selectedOffer) {
       checkedOfferIdRef.current = null;
+      setIsRedirecting(false);
       return;
     }
     if (checkedOfferIdRef.current === selectedOffer.id) {
@@ -77,6 +80,7 @@ const CreditCardApplyModal = (): React.ReactNode => {
     }
     checkedOfferIdRef.current = selectedOffer.id;
     setStatus('checking');
+    setIsRedirecting(false);
     const controller = new AbortController();
     const offerName = selectedOffer.name;
     const runCheck = async (): Promise<void> => {
@@ -122,6 +126,15 @@ const CreditCardApplyModal = (): React.ReactNode => {
     return null;
   }
 
+  if (isRedirecting) {
+    return (
+      <CreditCardRedirectLoading
+        partnerName={selectedOffer.title}
+        partnerImageUrl={selectedOffer.imageUrl}
+      />
+    );
+  }
+
   let content: React.ReactNode;
   if (status === 'checking') {
     content = <LoadingScreen />;
@@ -130,7 +143,7 @@ const CreditCardApplyModal = (): React.ReactNode => {
       <CreditCardForm
         creditCardName={selectedOffer.name}
         creditCardTitle={selectedOffer.title}
-        onClose={closeApply}
+        onClose={requestClose}
         onSuccess={openPartnerRedirectAndClose}
         isModal
       />
