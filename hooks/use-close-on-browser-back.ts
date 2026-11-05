@@ -12,6 +12,11 @@ interface UseCloseOnBrowserBackOptions {
 interface UseCloseOnBrowserBackResult {
   /** UI dismiss: pops our history entry so browser back stays in sync. */
   requestClose: () => void;
+  /**
+   * Drop the pushed history flag without calling `history.back()`.
+   * Use before external `location.assign` so cleanup cannot cancel navigation.
+   */
+  releaseHistoryEntry: () => void;
 }
 
 const hasHistoryFlag = (state: unknown, historyKey: string): boolean => {
@@ -97,5 +102,18 @@ export function useCloseOnBrowserBack({
     onCloseRef.current();
   }, [historyKey]);
 
-  return { requestClose };
+  const releaseHistoryEntry = useCallback((): void => {
+    hasPushedEntryRef.current = false;
+    if (!hasHistoryFlag(window.history.state, historyKey)) {
+      return;
+    }
+    const currentState =
+      typeof window.history.state === 'object' && window.history.state !== null
+        ? { ...(window.history.state as Record<string, unknown>) }
+        : {};
+    delete currentState[historyKey];
+    window.history.replaceState(currentState, '', window.location.href);
+  }, [historyKey]);
+
+  return { requestClose, releaseHistoryEntry };
 }
