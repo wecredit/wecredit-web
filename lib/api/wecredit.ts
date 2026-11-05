@@ -11,6 +11,7 @@
 import { wecreditConfig } from '@/lib/config';
 import {
   ENDPOINTS,
+  HEADER_CUSTOMER_ID,
   HEADER_LENDER_NAME,
   HEADER_MOBILE,
 } from '@/lib/constants/api-keys';
@@ -92,19 +93,32 @@ type RedirectApiResult = {
   error?: string;
 };
 
+function getRedirectUrlFromJson(json: {
+  utmLink?: string;
+  link?: string;
+}): string | undefined {
+  const utmLink = json.utmLink?.trim();
+  if (utmLink) {
+    return utmLink;
+  }
+  const link = json.link?.trim();
+  if (link) {
+    return link;
+  }
+  return undefined;
+}
+
 function parseRedirectJsonResponse(json: {
   statusCode?: number | string;
   statusMessage?: string;
   utmLink?: string;
+  link?: string;
 }): RedirectApiResult | null {
   const statusCodeNum =
     typeof json.statusCode === 'string'
       ? Number.parseInt(json.statusCode, 10)
       : json.statusCode;
-  if (statusCodeNum === 200 && json.utmLink) {
-    window.location.replace(json.utmLink);
-    return { success: true };
-  }
+
   if (statusCodeNum === 2006) {
     toast.error(json.statusMessage, {
       description: 'Unable to start journey.',
@@ -114,6 +128,14 @@ function parseRedirectJsonResponse(json: {
       error: json.statusMessage,
     };
   }
+
+  const redirectUrl = getRedirectUrlFromJson(json);
+  if (redirectUrl) {
+    // Finbox and other forwards may return utmLink with non-200 status codes (e.g. 3003).
+    window.location.replace(redirectUrl);
+    return { success: true };
+  }
+
   const isErrorStatus = statusCodeNum !== undefined && statusCodeNum !== 200;
   const isErrorMessage =
     Boolean(json.statusMessage) && json.statusMessage!.toLowerCase() !== 'success';
@@ -444,6 +466,44 @@ export async function updateUtmClicked(
     };
   }
 }
+/**
+ * Finbox redirect via `/api/forward` (`finbox-redirect`).
+ * `customerid` header must be check-status-all `lenderReferenceId`.
+ */
+export async function forwardFinboxRedirect(
+  mobile: string,
+  lenderReferenceId: string,
+  authorization?: string,
+  signal?: AbortSignal,
+): Promise<RedirectApiResult> {
+  const customerId = lenderReferenceId.trim();
+  if (!mobile) {
+    return {
+      success: false,
+      error: 'Mobile number required',
+    };
+  }
+  if (!customerId) {
+    return {
+      success: false,
+      error: 'Lender reference is required to continue.',
+    };
+  }
+  return executeHtmlRedirectRequest({
+    url: `${wecreditConfig.apiUrl}/api/forward`,
+    requestBody: {
+      endpoint: ENDPOINTS.FORWARD.FINBOX_REDIRECT,
+      partnerCode: getEffectivePartnerCode(),
+    },
+    headers: buildHeaders({
+      mobile,
+      authorization,
+      headers: { [HEADER_CUSTOMER_ID]: customerId },
+    }),
+    signal,
+  });
+}
+
 export async function forwardUpswingRedirect(
   mobile: string,
   authorization?: string,

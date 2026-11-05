@@ -165,6 +165,10 @@ const PLAIN_TEXT_FIELDS: FormFieldKey[] = [
   'firstName',
   'lastName',
   'companyName',
+];
+
+/** Address fields that also allow comma and ampersand. */
+const ADDRESS_TEXT_FIELDS: FormFieldKey[] = [
   'permanentAddress',
   'companyAddress',
 ];
@@ -181,6 +185,9 @@ function normalizeFieldValue(key: FormFieldKey, value: string): string {
   }
   if (EMAIL_FIELDS.includes(key)) {
     return sanitizeFormTextInput(value, 'email');
+  }
+  if (ADDRESS_TEXT_FIELDS.includes(key)) {
+    return sanitizeFormTextInput(value, 'address');
   }
   if (PLAIN_TEXT_FIELDS.includes(key)) {
     return sanitizeFormTextInput(value, 'plain');

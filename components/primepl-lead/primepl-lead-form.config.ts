@@ -5,7 +5,10 @@
 
 import { sanitizeNumericInput } from '@/lib/utils/form-helpers';
 import { isValidMobile } from '@/lib/utils/common-helper';
-import { getPlainTextFieldValidationError } from '@/lib/utils/validators';
+import {
+  getAddressFieldValidationError,
+  getPlainTextFieldValidationError,
+} from '@/lib/utils/validators';
 
 export { sanitizeNumericInput };
 
@@ -86,7 +89,7 @@ export const validatePrimeplLeadForm = (
   if (!values.address.trim()) {
     nextErrors.address = 'Address is required';
   } else {
-    const addressTextError = getPlainTextFieldValidationError(values.address);
+    const addressTextError = getAddressFieldValidationError(values.address);
     if (addressTextError) {
       nextErrors.address = addressTextError;
     }

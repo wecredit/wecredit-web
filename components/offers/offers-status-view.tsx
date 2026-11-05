@@ -11,7 +11,7 @@ import {
   OffersHero,
 } from '@/components/offers';
 import type { LenderOfferStatus } from '@/types/wecredit';
-import { forwardLenderRedirectByPhone, updateUtmClicked } from '@/lib/api/wecredit';
+import { forwardFinboxRedirect, forwardLenderRedirectByPhone, updateUtmClicked } from '@/lib/api/wecredit';
 import { notifyForwardNavigationEvent } from '@/lib/api/upswing-navigation-event';
 import { LNT_LENDER_NAME, STORAGE_AUTH_TOKEN, STORAGE_MOBILE } from '@/lib/constants/api-keys';
 import { ActionButton, PageHeader } from '@/components/shared';
@@ -20,11 +20,12 @@ import { useSearchParams } from 'next/navigation';
 import { useLoanApplicationStore } from '@/stores/loan-application-store';
 import { buildOffersPathClearingLenderFilter, buildOffersPathWithQuery } from '@/lib/utils/offers-navigation';
 import { useUrlParamsStore } from '@/stores/url-params-store';
-import { isFederationBank, isLnt, isZapcash } from '@/lib/utils/common-helper';
+import { isFederationBank, isFinbox, isLnt, isZapcash } from '@/lib/utils/common-helper';
 import { useFederationBankRedirect } from '@/hooks/use-federation-bank-redirect';
 import { FederationBankRedirectOverlay } from '@/components/offers/federation-bank-redirect-overlay';
 import { useZapcashSsoRedirect } from '@/hooks/use-zapcash-sso-redirect';
 import { ZapcashSsoRedirectOverlay } from '@/components/offers/zapcash-sso-redirect-overlay';
+import { toast } from 'sonner';
 
 
 /**
@@ -78,11 +79,6 @@ useEffect(() => {
       return;
     }
 
-    if (isZapcashLender) {
-      void handleZapcashSsoRedirect();
-      return;
-    }
-
     if (isLntOffer) {
       if (mobile) {
         void forwardLenderRedirectByPhone(mobile, LNT_LENDER_NAME, token);
@@ -90,14 +86,29 @@ useEffect(() => {
       return;
     }
 
+    if (isFinbox(offerLenderName || '')) {
+      if (!mobile) {
+        return;
+      }
+      const lenderReferenceId = offer.lenderReferenceId?.trim();
+      if (!lenderReferenceId) {
+        toast.error('Unable to start Finbox journey. Please refresh and try again.');
+        return;
+      }
+      void forwardFinboxRedirect(mobile, lenderReferenceId, token);
+      setTimeout(() => {
+        fetchOffers();
+      }, 3000);
+      return;
+    }
+
     if (!utmLink) {
       return;
     }
-    const lenderName: string = offer.lenderName || '';
-    const isUtmClicked: boolean = offer.wcStatus === 'UTM_CLICKED';
 
-    if (lenderName && mobile && !isUtmClicked) {
-      //void updateUtmClicked(mobile, lenderName, token);
+    if (isZapcashLender) {
+      void handleZapcashSsoRedirect();
+      return;
     }
 
     window.open(utmLink, '_blank'); 
