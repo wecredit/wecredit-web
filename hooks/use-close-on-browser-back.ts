@@ -13,8 +13,9 @@ interface UseCloseOnBrowserBackResult {
   /** UI dismiss: pops our history entry so browser back stays in sync. */
   requestClose: () => void;
   /**
-   * Drop the pushed history flag without calling `history.back()`.
-   * Use before external `location.assign` so cleanup cannot cancel navigation.
+   * Clears the modal history flag without `history.back()`.
+   * Needed before external redirects: programmatic close otherwise runs
+   * `history.back()` and cancels an in-flight `location.assign` to the partner.
    */
   releaseHistoryEntry: () => void;
 }
@@ -102,6 +103,7 @@ export function useCloseOnBrowserBack({
     onCloseRef.current();
   }, [historyKey]);
 
+  // replaceState (not back): keeps the current document so partner assign can proceed.
   const releaseHistoryEntry = useCallback((): void => {
     hasPushedEntryRef.current = false;
     if (!hasHistoryFlag(window.history.state, historyKey)) {

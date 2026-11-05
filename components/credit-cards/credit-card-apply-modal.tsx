@@ -66,10 +66,12 @@ const CreditCardApplyModal = (): React.ReactNode => {
       closeApply();
       return;
     }
-    // Prevent modal history.back() from canceling the partner navigation.
+    // closeApply() would trigger useCloseOnBrowserBack's history.back(), which
+    // races with location.assign and cancels the partner redirect. Clear the
+    // modal history flag first, then navigate while keeping the overlay up.
     releaseHistoryEntry();
     redirectToCreditCardUtmLink(result.redirectUrl);
-    // If the browser blocks/cancels navigation, do not leave the overlay stuck.
+    // Fallback if navigation is blocked — avoid a stuck redirect overlay.
     window.setTimeout(() => {
       if (controller.signal.aborted) {
         return;
@@ -79,6 +81,7 @@ const CreditCardApplyModal = (): React.ReactNode => {
     }, 2500);
   }, [closeApply, releaseHistoryEntry]);
 
+  // Ref so the lead-check effect does not re-subscribe when this callback identity changes.
   const openPartnerRedirectRef = useRef(openPartnerRedirectAndClose);
   openPartnerRedirectRef.current = openPartnerRedirectAndClose;
 
@@ -125,9 +128,10 @@ const CreditCardApplyModal = (): React.ReactNode => {
     };
     void runCheck();
     return () => {
+      // Abort only the lead-status request — never the partner redirect in-flight.
       controller.abort();
       hideLoading();
-      // Strict Mode remount / dep change must be allowed to re-run the check.
+      // Reset so React Strict Mode remount can re-run the check for this offer.
       if (checkedOfferIdRef.current === offerId) {
         checkedOfferIdRef.current = null;
       }
