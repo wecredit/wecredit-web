@@ -211,6 +211,7 @@ const CreditCardFields = ({
           placeholder="Enter your address"
           error={formErrors.address}
           required
+          textMode="address"
           autoComplete="street-address"
           className={INPUT_CLASS_NAME}
         />

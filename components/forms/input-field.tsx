@@ -22,6 +22,8 @@ interface InputFieldProps {
   helperText?: string;
   type?: string;
   inputMode?: 'text' | 'numeric' | 'email' | 'tel';
+  /** Overrides auto-detected sanitization (e.g. address allows comma and &). */
+  textMode?: FormTextInputMode;
   maxLength?: number;
   required?: boolean;
   autoComplete?: string;
@@ -42,6 +44,7 @@ const InputField = ({
   helperText,
   type = 'text',
   inputMode = 'text',
+  textMode,
   maxLength,
   required,
   autoComplete,
@@ -50,6 +53,9 @@ const InputField = ({
   const errorId = id ? `${id}-error` : undefined;
 
   const resolveTextInputMode = (): FormTextInputMode | null => {
+    if (textMode) {
+      return textMode;
+    }
     if (type === 'email' || inputMode === 'email') {
       return 'email';
     }

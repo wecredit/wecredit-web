@@ -15,6 +15,11 @@ export function getPlainTextFieldValidationError(value: string): string {
   return getTextInputValidationError(value, 'plain');
 }
 
+/** Returns a validation error for address fields (allows commas etc.), or empty when valid. */
+export function getAddressFieldValidationError(value: string): string {
+  return getTextInputValidationError(value, 'address');
+}
+
 /** Returns a validation error for email fields (emoji-only check), or an empty string when valid. */
 export function getEmailTextValidationError(value: string): string {
   return getTextInputValidationError(value, 'email');

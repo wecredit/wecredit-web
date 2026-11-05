@@ -58,6 +58,10 @@ const PLAIN_TEXT_FIELDS: FormFieldKey[] = [
   'firstName',
   'lastName',
   'companyName',
+];
+
+/** Address fields that also allow comma and ampersand. */
+const ADDRESS_TEXT_FIELDS: FormFieldKey[] = [
   'permanentAddress',
   'companyAddress',
 ];
@@ -66,6 +70,9 @@ const PLAIN_TEXT_FIELDS: FormFieldKey[] = [
  * Normalize values that must stay numeric or uppercased even on prefill.
  */
 const normalizeLeadFieldValue = (fieldKey: string, value: string): string => {
+  if (ADDRESS_TEXT_FIELDS.includes(fieldKey as FormFieldKey)) {
+    return sanitizeFormTextInput(value, 'address').replace(/\s+/g, ' ');
+  }
   if (PLAIN_TEXT_FIELDS.includes(fieldKey as FormFieldKey)) {
     return sanitizeFormTextInput(value, 'plain').replace(/\s+/g, ' ');
   }
@@ -279,6 +286,13 @@ export const useLeadForm = (
   const getFieldFormatError = useCallback((fieldKey: string, value: string): string => {
     if (fieldKey === 'email') {
       const textError = getTextInputValidationError(value, 'email');
+      if (textError) {
+        return textError;
+      }
+    }
+
+    if (ADDRESS_TEXT_FIELDS.includes(fieldKey as FormFieldKey)) {
+      const textError = getTextInputValidationError(value, 'address');
       if (textError) {
         return textError;
       }
@@ -508,12 +522,16 @@ export const useLeadForm = (
       if (
         field.key === 'pan'
         || PLAIN_TEXT_FIELDS.includes(field.key)
+        || ADDRESS_TEXT_FIELDS.includes(field.key)
         || field.key === 'pincode'
         || field.key === 'companyPincode'
       ) {
         // Keep PAN and pincode values normalized even when the API pre-fills them.
         const normalized = normalizeLeadFieldValue(field.key, rawValue);
-        initialValues[field.key] = PLAIN_TEXT_FIELDS.includes(field.key) ? normalized.trim() : normalized;
+        const shouldTrim =
+          PLAIN_TEXT_FIELDS.includes(field.key) ||
+          ADDRESS_TEXT_FIELDS.includes(field.key);
+        initialValues[field.key] = shouldTrim ? normalized.trim() : normalized;
         return;
       }
 

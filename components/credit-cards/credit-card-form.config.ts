@@ -7,7 +7,10 @@ import {
   normalizePan,
   sanitizeNumericInput,
 } from '@/lib/utils/form-helpers';
-import { getPlainTextFieldValidationError } from '@/lib/utils/validators';
+import {
+  getAddressFieldValidationError,
+  getPlainTextFieldValidationError,
+} from '@/lib/utils/validators';
 import type { CreditCardLeadPayload } from '@/types/credit-card';
 
 export { sanitizeNumericInput };
@@ -141,6 +144,11 @@ export function validateCreditCardForm(
   }
   if (!values.address.trim()) {
     nextErrors.address = 'Address is required';
+  } else {
+    const addressError = getAddressFieldValidationError(values.address);
+    if (addressError) {
+      nextErrors.address = addressError;
+    }
   }
   if (!values.addressType) {
     nextErrors.addressType = 'Address type is required';
