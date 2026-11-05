@@ -12,6 +12,12 @@ interface UseCloseOnBrowserBackOptions {
 interface UseCloseOnBrowserBackResult {
   /** UI dismiss: pops our history entry so browser back stays in sync. */
   requestClose: () => void;
+  /**
+   * Clears the modal history flag without `history.back()`.
+   * Needed before external redirects: programmatic close otherwise runs
+   * `history.back()` and cancels an in-flight `location.assign` to the partner.
+   */
+  releaseHistoryEntry: () => void;
 }
 
 const hasHistoryFlag = (state: unknown, historyKey: string): boolean => {
@@ -97,5 +103,19 @@ export function useCloseOnBrowserBack({
     onCloseRef.current();
   }, [historyKey]);
 
-  return { requestClose };
+  // replaceState (not back): keeps the current document so partner assign can proceed.
+  const releaseHistoryEntry = useCallback((): void => {
+    hasPushedEntryRef.current = false;
+    if (!hasHistoryFlag(window.history.state, historyKey)) {
+      return;
+    }
+    const currentState =
+      typeof window.history.state === 'object' && window.history.state !== null
+        ? { ...(window.history.state as Record<string, unknown>) }
+        : {};
+    delete currentState[historyKey];
+    window.history.replaceState(currentState, '', window.location.href);
+  }, [historyKey]);
+
+  return { requestClose, releaseHistoryEntry };
 }

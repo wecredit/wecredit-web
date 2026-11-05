@@ -34,7 +34,7 @@ const CreditCardApplyModal = (): React.ReactNode => {
   const checkedOfferIdRef = useRef<string | null>(null);
   const redirectAbortRef = useRef<AbortController | null>(null);
   useBodyScrollLock(isModalOpen);
-  const { requestClose } = useCloseOnBrowserBack({
+  const { requestClose, releaseHistoryEntry } = useCloseOnBrowserBack({
     isOpen: isModalOpen,
     onClose: closeApply,
     historyKey: CREDIT_CARD_APPLY_MODAL_HISTORY_KEY,
@@ -55,6 +55,7 @@ const CreditCardApplyModal = (): React.ReactNode => {
       controller.signal
     );
     if (controller.signal.aborted) {
+      setIsRedirecting(false);
       return;
     }
     if ('error' in result) {
@@ -65,13 +66,30 @@ const CreditCardApplyModal = (): React.ReactNode => {
       closeApply();
       return;
     }
-    // Keep redirect UI mounted until the browser leaves this page.
+    // closeApply() would trigger useCloseOnBrowserBack's history.back(), which
+    // races with location.assign and cancels the partner redirect. Clear the
+    // modal history flag first, then navigate while keeping the overlay up.
+    releaseHistoryEntry();
     redirectToCreditCardUtmLink(result.redirectUrl);
-  }, [closeApply]);
+    // Fallback if navigation is blocked — avoid a stuck redirect overlay.
+    window.setTimeout(() => {
+      if (controller.signal.aborted) {
+        return;
+      }
+      setIsRedirecting(false);
+      closeApply();
+    }, 2500);
+  }, [closeApply, releaseHistoryEntry]);
+
+  // Ref so the lead-check effect does not re-subscribe when this callback identity changes.
+  const openPartnerRedirectRef = useRef(openPartnerRedirectAndClose);
+  openPartnerRedirectRef.current = openPartnerRedirectAndClose;
 
   useEffect(() => {
     if (!isModalOpen || !selectedOffer) {
       checkedOfferIdRef.current = null;
+      redirectAbortRef.current?.abort();
+      redirectAbortRef.current = null;
       setIsRedirecting(false);
       return;
     }
@@ -80,8 +98,8 @@ const CreditCardApplyModal = (): React.ReactNode => {
     }
     checkedOfferIdRef.current = selectedOffer.id;
     setStatus('checking');
-    setIsRedirecting(false);
     const controller = new AbortController();
+    const offerId = selectedOffer.id;
     const offerName = selectedOffer.name;
     const runCheck = async (): Promise<void> => {
       showLoading({
@@ -95,7 +113,7 @@ const CreditCardApplyModal = (): React.ReactNode => {
         }
         if (result.hasExistingLead) {
           hideLoading();
-          await openPartnerRedirectAndClose();
+          await openPartnerRedirectRef.current();
           return;
         }
         setStatus('form');
@@ -110,17 +128,15 @@ const CreditCardApplyModal = (): React.ReactNode => {
     };
     void runCheck();
     return () => {
+      // Abort only the lead-status request — never the partner redirect in-flight.
       controller.abort();
-      redirectAbortRef.current?.abort();
       hideLoading();
+      // Reset so React Strict Mode remount can re-run the check for this offer.
+      if (checkedOfferIdRef.current === offerId) {
+        checkedOfferIdRef.current = null;
+      }
     };
-  }, [
-    hideLoading,
-    isModalOpen,
-    openPartnerRedirectAndClose,
-    selectedOffer,
-    showLoading,
-  ]);
+  }, [hideLoading, isModalOpen, selectedOffer, showLoading]);
 
   if (!isModalOpen || !selectedOffer) {
     return null;
