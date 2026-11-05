@@ -68,17 +68,11 @@ const CreditCardApplyModal = (): React.ReactNode => {
     }
     // closeApply() would trigger useCloseOnBrowserBack's history.back(), which
     // races with location.assign and cancels the partner redirect. Clear the
-    // modal history flag first, then navigate while keeping the overlay up.
+    // modal history flag first, then navigate and close the overlay immediately.
     releaseHistoryEntry();
     redirectToCreditCardUtmLink(result.redirectUrl);
-    // Fallback if navigation is blocked — avoid a stuck redirect overlay.
-    window.setTimeout(() => {
-      if (controller.signal.aborted) {
-        return;
-      }
-      setIsRedirecting(false);
-      closeApply();
-    }, 2500);
+    setIsRedirecting(false);
+    closeApply();
   }, [closeApply, releaseHistoryEntry]);
 
   // Ref so the lead-check effect does not re-subscribe when this callback identity changes.
