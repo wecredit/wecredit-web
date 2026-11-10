@@ -81,7 +81,7 @@ const AuthModal = (): React.ReactNode => {
     <AnimatePresence>
       {isModalOpen && (
         <motion.div
-          className="fixed inset-0 z-100 flex flex-col md:items-center md:justify-center md:p-6"
+          className="fixed inset-0 z-100 flex flex-col overscroll-y-none md:items-center md:justify-center md:p-6"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -99,10 +99,10 @@ const AuthModal = (): React.ReactNode => {
           {/* Modal Container - handles slide-up entrance */}
           <motion.div
             className={cn(
-              'relative flex h-full flex-col overflow-hidden md:max-w-[calc(100vw-2rem)] md:rounded-3xl md:bg-white md:shadow-2xl',
+              'relative flex h-full min-h-0 flex-col overflow-hidden overscroll-y-none md:max-w-[calc(100vw-2rem)] md:rounded-3xl md:shadow-2xl',
               currentStep === 'phone'
                 ? 'md:h-auto md:w-[480px]'
-                : 'md:h-auto md:w-[600px] md:overflow-visible md:bg-white'
+                : 'md:h-auto md:w-[600px] md:overflow-visible'
             )}
             initial={{ y: '100%' }}
             animate={{ y: 0 }}

@@ -45,7 +45,7 @@ export const OTPStepScreen = ({
     }
     : undefined;
   const headerClassName = usesResponsiveModalHeight
-    ? 'h-[calc(var(--app-height,1vh)*43)] min-[390px]:h-[calc(var(--app-height,1vh)*46)] md:h-[300px]'
+    ? 'h-[43%] min-[390px]:h-[46%] overflow-hidden md:h-[300px]'
     : undefined;
   const resolvedHeaderHeight: HeaderHeightPreset | undefined =
     headerHeightPercent ? undefined : headerHeight;
@@ -96,8 +96,8 @@ export const OTPStepScreen = ({
   return (
     <motion.div
       className={cn(
-        'relative flex flex-col ',
-        isDesktopModal && 'min-h-[calc(var(--app-height,1vh)*100)] md:h-auto md:min-h-0'
+        'relative flex h-full min-h-0 flex-col',
+        isDesktopModal && 'md:h-auto md:min-h-0'
       )}
       style={isDesktopModal ? undefined : containerStyle}
       initial={{ opacity: 0 }}

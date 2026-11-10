@@ -41,7 +41,7 @@ export const PhoneStepScreen = ({
     }
     : undefined;
   const resolvedHeaderClassName = cn(
-    usesResponsiveModalHeight && 'h-[calc(var(--app-height,1vh)*65)] md:h-0 md:min-h-0 md:overflow-hidden',
+    usesResponsiveModalHeight && 'h-[65%] overflow-hidden md:h-0 md:min-h-0',
     headerClassName
   );
   const resolvedHeaderHeight: HeaderHeightPreset | undefined =
@@ -58,8 +58,8 @@ export const PhoneStepScreen = ({
   return (
     <motion.div
       className={cn(
-        'relative flex flex-col',
-        isDesktopModal && 'min-h-[calc(var(--app-height,1vh)*100)] md:h-auto md:min-h-0'
+        'relative flex h-full min-h-0 flex-col',
+        isDesktopModal && 'md:h-auto md:min-h-0'
       )}
       style={isDesktopModal ? undefined : containerStyle}
       initial={{ opacity: 0 }}
