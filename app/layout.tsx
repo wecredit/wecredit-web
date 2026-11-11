@@ -6,6 +6,7 @@ import ConditionalMobileHeader from '@/components/layout/conditional-mobile-head
 import ConditionalFooter from '@/components/layout/conditional-footer';
 import { AuthModal } from '@/components/auth';
 import { AuthProvider } from '@/providers/auth-provider';
+import { OpenNativeAppProvider } from '@/providers/open-native-app-provider';
 import { ToastProvider } from '@/providers/toast-provider';
 import { FeatureFlagProvider } from '@/providers/feature-flag-provider';
 import { LoadingScreen } from '@/components/shared/loading-screen';
@@ -120,6 +121,7 @@ export default async function RootLayout({
         <JsonLd data={buildOrganizationJsonLd()} />
         {/* FeatureFlagProvider must wrap everything for dev tools */}
         <FeatureFlagProvider>
+          <OpenNativeAppProvider />
           {/* Suspense only around AuthProvider (useSearchParams) — not the page body */}
           <Suspense fallback={null}>
             <AuthProvider>
