@@ -34,7 +34,7 @@ const CreditCardApplyModal = (): React.ReactNode => {
   const checkedOfferIdRef = useRef<string | null>(null);
   const redirectAbortRef = useRef<AbortController | null>(null);
   useBodyScrollLock(isModalOpen);
-  const { requestClose, releaseHistoryEntry } = useCloseOnBrowserBack({
+  const { requestClose } = useCloseOnBrowserBack({
     isOpen: isModalOpen,
     onClose: closeApply,
     historyKey: CREDIT_CARD_APPLY_MODAL_HISTORY_KEY,
@@ -66,14 +66,13 @@ const CreditCardApplyModal = (): React.ReactNode => {
       closeApply();
       return;
     }
-    // closeApply() would trigger useCloseOnBrowserBack's history.back(), which
-    // races with location.assign and cancels the partner redirect. Clear the
-    // modal history flag first, then navigate and close the overlay immediately.
-    releaseHistoryEntry();
+    // Partner opens in a new tab, so closeApply can safely history.back() and
+    // remove the modal's pushState entry. Do not releaseHistoryEntry() here —
+    // that only clears the flag and leaves an orphan entry (extra Back press).
     redirectToCreditCardUtmLink(result.redirectUrl);
     setIsRedirecting(false);
     closeApply();
-  }, [closeApply, releaseHistoryEntry]);
+  }, [closeApply]);
 
   // Ref so the lead-check effect does not re-subscribe when this callback identity changes.
   const openPartnerRedirectRef = useRef(openPartnerRedirectAndClose);

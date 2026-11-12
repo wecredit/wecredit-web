@@ -13,9 +13,10 @@ interface UseCloseOnBrowserBackResult {
   /** UI dismiss: pops our history entry so browser back stays in sync. */
   requestClose: () => void;
   /**
-   * Clears the modal history flag without `history.back()`.
-   * Needed before external redirects: programmatic close otherwise runs
-   * `history.back()` and cancels an in-flight `location.assign` to the partner.
+   * Clears the modal history flag via replaceState without popping the entry.
+   * Only for same-tab `location.assign` redirects (back() would cancel assign).
+   * Prefer close → history.back() when the partner URL opens in a new tab —
+   * otherwise the unpushed entry forces an extra Back press on the page.
    */
   releaseHistoryEntry: () => void;
 }
