@@ -33,7 +33,7 @@ export function redirectToCreditCardUtmLink(utmLink: string): void {
   if (!link) {
     return;
   }
-  window.open(link, '_blank', 'noopener,noreferrer');
+  window.open(link, '_blank');
 }
 
 /**
