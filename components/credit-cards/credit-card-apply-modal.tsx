@@ -66,9 +66,8 @@ const CreditCardApplyModal = (): React.ReactNode => {
       closeApply();
       return;
     }
-    // closeApply() would trigger useCloseOnBrowserBack's history.back(), which
-    // races with location.assign and cancels the partner redirect. Clear the
-    // modal history flag first, then navigate and close the overlay immediately.
+    // closeApply() would trigger useCloseOnBrowserBack's history.back().
+    // Clear the modal history flag first, then open the partner URL and close.
     releaseHistoryEntry();
     redirectToCreditCardUtmLink(result.redirectUrl);
     setIsRedirecting(false);

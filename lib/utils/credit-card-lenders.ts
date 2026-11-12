@@ -26,14 +26,14 @@ export function sanitizeCreditCardUtmLink(utmLink: string): string {
 }
 
 /**
- * Navigates the current tab to a credit card partner URL (redirect-url or utmLink).
+ * Opens a credit card partner URL (redirect-url or utmLink) in a new window/tab.
  */
 export function redirectToCreditCardUtmLink(utmLink: string): void {
   const link = sanitizeCreditCardUtmLink(utmLink);
   if (!link) {
     return;
   }
-  window.location.assign(link);
+  window.open(link, '_blank', 'noopener,noreferrer');
 }
 
 /**
