@@ -6,37 +6,50 @@
  */
 
 import type { CreditCardItemProps } from './credit-card-item.types';
+import { CREDIT_CARD_FEATURE_TAGS } from './credit-card-item.config';
 import { useCreditCardApply } from '@/hooks/use-credit-card-apply';
 import ActionButton from '../shared/action-button';
 import { IMAGES } from '@/lib/constants/images';
+import { COLORS } from '@/lib/constants/colors';
 
 const CreditCardItem = ({ card }: CreditCardItemProps): React.ReactNode => {
   const { handleApplyNow } = useCreditCardApply();
   const hasLenderImage = Boolean(card.imageUrl);
   const imageSrc = card.imageUrl || IMAGES.ICONS.CREDIT_CARD_OFFER;
 
-  let introContent: React.ReactNode = null;
-  if (card.intro) {
-    introContent = (
-      <p className="text-zinc-500 text-xs font-normal font-sans leading-4 my-2 line-clamp-3">
-        {card.intro}
-      </p>
-    );
-  }
+  const featureTagsContent = (
+    <ul className="flex flex-wrap gap-2 list-none p-0 m-0">
+      {CREDIT_CARD_FEATURE_TAGS.map((tag, index) => (
+        <li
+          key={`${tag}-${index}`}
+          className="rounded px-3 py-1 text-xs font-medium bg-white text-brand-primary"
+        >
+          {tag}
+        </li>
+      ))}
+    </ul>
+  );
 
   let imageClassName: string;
   if (hasLenderImage) {
-    imageClassName = 'absolute inset-0 w-full h-full object-contain p-4';
+    imageClassName = 'w-full h-full object-contain';
   } else {
-    imageClassName = 'absolute inset-0 w-full h-full object-cover';
+    imageClassName = 'w-full h-full object-cover';
   }
 
   return (
     <article
-      className="w-full relative bg-white rounded-xl shadow overflow-hidden flex flex-col transition-transform hover:scale-[1.02]"
+      className="w-full relative rounded-2xl border border-brand-primary/20 overflow-hidden flex flex-col p-4 sm:p-5 gap-4 shadow-sm transition-transform hover:scale-[1.02]"
+      style={{
+        background: `linear-gradient(180deg, ${COLORS.brand.lightestGradient.from} 0%, ${COLORS.brand.lightestGradient.to} 100%)`,
+      }}
       data-card-title={card.title}
     >
-      <div className="relative w-full h-48 shrink-0 overflow-hidden bg-zinc-900">
+      <h2 className="text-neutral-900 text-[18px] leading-[22px] font-semibold text-left">
+        {card.title}
+      </h2>
+
+      <div className="relative w-full h-48 sm:h-52 shrink-0 overflow-hidden rounded-xl flex items-center justify-center bg-transparent">
         <img
           src={imageSrc}
           alt={card.title}
@@ -45,22 +58,16 @@ const CreditCardItem = ({ card }: CreditCardItemProps): React.ReactNode => {
         />
       </div>
 
-      <div className="flex-1 flex flex-col p-2.5 min-h-0">
-        <h2 className="text-neutral-900 text-[18px] leading-[22px] font-medium text-left">
-          {card.title}
-        </h2>
-        {introContent}
-      </div>
+      {featureTagsContent}
 
-      <div className="border-t border-gray-200 p-2.5 flex items-center justify-end shrink-0">
-        <ActionButton
-          type="button"
-          onClick={() => handleApplyNow(card)}
-          className="text-xs font-medium rounded-lg py-1 w-30"
-        >
-          Apply Now
-        </ActionButton>
-      </div>
+      <ActionButton
+        type="button"
+        onClick={() => handleApplyNow(card)}
+        fullWidth
+        className="text-sm font-semibold rounded-lg py-2.5 h-auto"
+      >
+        Apply Now
+      </ActionButton>
     </article>
   );
 };
