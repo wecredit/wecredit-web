@@ -6,29 +6,33 @@
  */
 
 import type { CreditCardItemProps } from './credit-card-item.types';
-import { CREDIT_CARD_FEATURE_TAGS } from './credit-card-item.config';
 import { useCreditCardApply } from '@/hooks/use-credit-card-apply';
 import ActionButton from '../shared/action-button';
 import { IMAGES } from '@/lib/constants/images';
 import { COLORS } from '@/lib/constants/colors';
+import { parseCreditCardFeatureTags } from '@/lib/utils/credit-card-lenders';
 
 const CreditCardItem = ({ card }: CreditCardItemProps): React.ReactNode => {
   const { handleApplyNow } = useCreditCardApply();
   const hasLenderImage = Boolean(card.imageUrl);
   const imageSrc = card.imageUrl || IMAGES.ICONS.CREDIT_CARD_OFFER;
+  const featureTags = parseCreditCardFeatureTags(card.intro);
 
-  const featureTagsContent = (
-    <ul className="flex flex-wrap gap-2 list-none p-0 m-0">
-      {CREDIT_CARD_FEATURE_TAGS.map((tag, index) => (
-        <li
-          key={`${tag}-${index}`}
-          className="rounded px-3 py-1 text-xs font-medium bg-white text-brand-primary"
-        >
-          {tag}
-        </li>
-      ))}
-    </ul>
-  );
+  let featureTagsContent: React.ReactNode = null;
+  if (featureTags.length > 0) {
+    featureTagsContent = (
+      <ul className="flex flex-wrap gap-2 list-none p-0 m-0">
+        {featureTags.map((tag, index) => (
+          <li
+            key={`${tag}-${index}`}
+            className="rounded px-3 py-1 text-xs font-medium bg-white text-brand-primary"
+          >
+            {tag}
+          </li>
+        ))}
+      </ul>
+    );
+  }
 
   let imageClassName: string;
   if (hasLenderImage) {
