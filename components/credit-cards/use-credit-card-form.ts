@@ -20,10 +20,7 @@ interface UseCreditCardFormOptions {
 interface UseCreditCardFormReturn {
   formValues: CreditCardFormState;
   formErrors: Record<string, string>;
-  handleFieldChange: (
-    key: keyof CreditCardFormState,
-    value: string | boolean
-  ) => void;
+  handleFieldChange: (key: keyof CreditCardFormState, value: string) => void;
   handleFieldBlur: (key: keyof CreditCardFormState) => void;
   handleSubmit: () => Promise<void>;
   getValidatedPayload: () => CreditCardLeadPayload | null;
@@ -58,7 +55,7 @@ export const useCreditCardForm = (
   }, [isAuthenticated, user?.phoneNumber]);
 
   const handleFieldChange = useCallback(
-    (key: keyof CreditCardFormState, value: string | boolean): void => {
+    (key: keyof CreditCardFormState, value: string): void => {
       setFormValues((prev) => ({ ...prev, [key]: value }));
       setFormErrors((prev) => {
         if (!prev[key]) {
@@ -142,8 +139,8 @@ export const useCreditCardForm = (
   ]);
 
   const canSubmit = useMemo((): boolean => {
-    return formValues.consent && !isSubmitting;
-  }, [formValues.consent, isSubmitting]);
+    return !isSubmitting;
+  }, [isSubmitting]);
 
   return {
     formValues,

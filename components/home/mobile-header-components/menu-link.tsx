@@ -1,7 +1,10 @@
 import { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
+import type { MouseEvent } from 'react';
 import type { NavigationLink } from '@/types/navigation';
+import { useAuth } from '@/hooks/use-auth';
 
 /** Props for MenuLink component */
 interface MenuLinkProps {
@@ -14,7 +17,22 @@ interface MenuLinkProps {
  */
 export const MenuLink = ({ link, onNavigate }: MenuLinkProps) => {
     const [isExpanded, setIsExpanded] = useState(false);
+    const router = useRouter();
+    const { isAuthenticated, openAuthModalWithAction } = useAuth();
     const hasChildren = link.children && link.children.length > 0;
+
+    const handleCreditCardsClick = (event: MouseEvent<HTMLAnchorElement>): void => {
+        event.preventDefault();
+        onNavigate();
+        if (!isAuthenticated) {
+            openAuthModalWithAction({
+                type: 'navigate_to_offer',
+                href: '/credit-cards',
+            });
+            return;
+        }
+        router.push('/credit-cards');
+    };
 
     if (hasChildren) {
         return (
@@ -65,13 +83,15 @@ export const MenuLink = ({ link, onNavigate }: MenuLinkProps) => {
         );
     }
 
+    const isCreditCards = link.url === '/credit-cards';
+
     return (
         <Link
             href={link.url}
             target={link.openInNewTab ? '_blank' : undefined}
             rel={link.openInNewTab ? 'noopener noreferrer' : undefined}
             className="block px-3 py-3 text-white/90 hover:text-white hover:bg-white/5 rounded-lg font-medium transition-colors"
-            onClick={onNavigate}
+            onClick={isCreditCards ? handleCreditCardsClick : onNavigate}
         >
             {link.label}
         </Link>

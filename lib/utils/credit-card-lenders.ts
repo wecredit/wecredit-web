@@ -37,6 +37,20 @@ export function redirectToCreditCardUtmLink(utmLink: string): void {
 }
 
 /**
+ * Splits lender description into feature tags (comma-separated).
+ * Example: "100x points, Lifetime free, Pay in 90 days"
+ */
+export function parseCreditCardFeatureTags(description: string): string[] {
+  if (!description.trim()) {
+    return [];
+  }
+  return description
+    .split(',')
+    .map((tag) => tag.trim())
+    .filter(Boolean);
+}
+
+/**
  * Maps API credit-card lenders to simple display offers.
  * Keeps lenders that have a name and apply link.
  */
