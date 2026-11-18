@@ -25,7 +25,7 @@ const CreditCardItem = ({ card }: CreditCardItemProps): React.ReactNode => {
         {featureTags.map((tag, index) => (
           <li
             key={`${tag}-${index}`}
-            className="rounded px-3 py-1 text-xs font-medium bg-white text-brand-primary"
+            className="rounded px-1 py-0.5 text-xs leading-4 font-medium bg-white text-brand-primary"
           >
             {tag}
           </li>
