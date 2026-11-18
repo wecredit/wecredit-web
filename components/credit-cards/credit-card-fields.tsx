@@ -1,7 +1,6 @@
 'use client';
 
 import InputField from '@/components/forms/input-field';
-import ConsentCheckbox from '@/components/forms/consent-checkbox';
 import DateOfBirthField from '@/components/forms/date-of-birth-field';
 import ButtonGroup from '@/components/forms/button-group';
 import {
@@ -216,13 +215,6 @@ const CreditCardFields = ({
           className={INPUT_CLASS_NAME}
         />
       </div>
-
-      <ConsentCheckbox
-        id="credit-card-consent"
-        checked={formValues.consent}
-        onChange={(checked) => handleFieldChange('consent', checked)}
-        error={formErrors.consent}
-      />
     </>
   );
 };

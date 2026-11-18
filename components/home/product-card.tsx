@@ -1,27 +1,48 @@
+'use client';
+
 import Link from 'next/link';
 import Image from 'next/image';
-import type { LucideIcon } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/hooks/use-auth';
+import type { MouseEvent } from 'react';
+import type { ProductCardProps } from './product-card.types';
 
-interface ProductCardProps {
-  id: string;
-  label: string;
-  href: string;
-  icon?: LucideIcon;
-  imagePath?: string;
-}
+const ProductCard = ({
+  label,
+  href,
+  icon: Icon,
+  imagePath,
+  requiresAuth = false,
+}: ProductCardProps): React.ReactNode => {
+  const router = useRouter();
+  const { isAuthenticated, openAuthModalWithAction } = useAuth();
 
-const ProductCard = ({ label, href, icon: Icon, imagePath }: ProductCardProps): React.ReactNode => {
+  const handleClick = (event: MouseEvent<HTMLAnchorElement>): void => {
+    if (!requiresAuth) {
+      return;
+    }
+
+    event.preventDefault();
+
+    if (!isAuthenticated) {
+      openAuthModalWithAction({
+        type: 'navigate_to_offer',
+        href,
+      });
+      return;
+    }
+
+    router.push(href);
+  };
+
   return (
-    <div
-      className="h-full"
-    >
+    <div className="h-full">
       <Link
         href={href}
+        onClick={handleClick}
         className="wc-product-card flex flex-col items-center justify-center gap-3 p-4 h-full rounded-xl md:border md:border-gray-100 bg-white hover:border-gray-200 hover:shadow-lg transition-colors transition-shadow duration-300"
       >
-        <div
-          className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-wc-blue-50 flex items-center justify-center"
-        >
+        <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-wc-blue-50 flex items-center justify-center">
           {imagePath ? (
             <Image
               src={imagePath}

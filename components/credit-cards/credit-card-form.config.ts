@@ -30,7 +30,6 @@ export interface CreditCardFormState {
   dob: string;
   address: string;
   addressType: CreditCardAddressType;
-  consent: boolean;
 }
 
 export const CREDIT_CARD_GENDER_OPTIONS: Array<{
@@ -68,7 +67,6 @@ export const DEFAULT_CREDIT_CARD_FORM_STATE: CreditCardFormState = {
   dob: '',
   address: '',
   addressType: 'current',
-  consent: true,
 };
 
 const PAN_REGEX = /^[A-Z]{5}[0-9]{4}[A-Z]$/;
@@ -152,9 +150,6 @@ export function validateCreditCardForm(
   }
   if (!values.addressType) {
     nextErrors.addressType = 'Address type is required';
-  }
-  if (!values.consent) {
-    nextErrors.consent = 'Please accept the terms to continue';
   }
   return nextErrors;
 }

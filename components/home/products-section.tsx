@@ -1,17 +1,11 @@
+'use client';
+
 import { ShoppingBag, BriefcaseBusiness, Home, CreditCard } from 'lucide-react';
 import ProductCard from './product-card';
 import { IMAGES } from '@/lib/constants/images';
-import type { LucideIcon } from 'lucide-react';
+import type { HomeProduct } from './products-section.types';
 
-interface Product {
-  id: string;
-  label: string;
-  href: string;
-  icon: LucideIcon;
-  imagePath?: string;
-}
-
-const products: Product[] = [
+const products: HomeProduct[] = [
   {
     id: 'personal-loan',
     label: 'Personal Loan',
@@ -39,6 +33,7 @@ const products: Product[] = [
     href: '/credit-cards',
     icon: CreditCard,
     imagePath: IMAGES.ICONS.CREDIT_CARD,
+    requiresAuth: true,
   },
   {
     id: 'home-loan',
@@ -76,6 +71,7 @@ const ProductsSection = (): React.ReactNode => {
                 href={product.href}
                 icon={product.icon}
                 imagePath={product.imagePath}
+                requiresAuth={product.requiresAuth}
               />
             </div>
           ))}
