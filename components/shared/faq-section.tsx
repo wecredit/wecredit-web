@@ -69,6 +69,16 @@ const FaqAccordionItem = ({
 				<div className="px-4 sm:px-5 pb-4 pt-1">
 					<p className="text-sm text-black-600 leading-relaxed whitespace-pre-line">
 						{item.answer}
+						{item.link && (
+							<a
+								href={item.link.href}
+								target="_blank"
+								rel="noopener noreferrer"
+								className="text-blue-600 underline"
+							>
+								{item.link.label}
+							</a>
+						)}
 					</p>
 				</div>
 			</motion.div>

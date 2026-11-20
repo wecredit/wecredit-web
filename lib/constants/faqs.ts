@@ -7,6 +7,11 @@ export interface FaqItem {
 	id: string;
 	question: string;
 	answer: string;
+	/** Optional trailing link rendered after the answer text */
+	link?: {
+		href: string;
+		label: string;
+	};
 }
 
 /**
@@ -126,6 +131,10 @@ export const CREDIT_CARD_FAQS: FaqItem[] = [
 		id: 'cc-faq-10',
 		question: 'Where can I see the full fees and card terms?',
 		answer:
-			"Unity Bank lists fees, interest rates and payment terms in the Most Important Terms and Conditions (MITC) on its website. Read Unity Bank's MITC",
+			'Unity Bank lists fees, interest rates and payment terms in the Most Important Terms and Conditions (MITC) on its website. ',
+		link: {
+			href: 'https://cards.unity.bank.in/docs/credit-cards/mitc-key-fact-statement',
+			label: "Read Unity Bank's MITC",
+		},
 	},
 ];
