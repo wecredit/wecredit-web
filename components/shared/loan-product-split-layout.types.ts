@@ -17,7 +17,7 @@ export interface LoanProductSplitLayoutProps {
   accent?: LoanFeatureAccent;
   title: string;
   headline: string;
-  subheadline: string;
+  subheadline?: string;
   formTitle: string;
   hero: LoanProductHeroConfig;
   /** Optional full-section banner pattern. Perspective is drawn in CSS. */

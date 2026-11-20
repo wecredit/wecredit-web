@@ -55,7 +55,6 @@ const CreditCardForm = ({
       accent="blue"
       title="Credit Card"
       headline={`Apply for ${creditCardTitle}`}
-      subheadline="Fill in a few details to continue to the issuer application."
       formTitle="Credit Card Application"
       hero={{
         src: IMAGES.ICONS.CREDIT_CARD,
