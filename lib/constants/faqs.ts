@@ -63,3 +63,69 @@ export const STANDARD_FAQS: FaqItem[] = [
 			'Missing an EMI can attract late payment charges and negatively impact the credit score. Repeated delays may affect future loan eligibility.',
 	},
 ];
+
+/**
+ * FAQ items for the credit cards page (Unity Bank Zero & Vibe)
+ */
+export const CREDIT_CARD_FAQS: FaqItem[] = [
+	{
+		id: 'cc-faq-1',
+		question: "What's the difference between Unity Bank Zero and Vibe?",
+		answer:
+			'Zero starts at a ₹2,000 fixed deposit with no joining or annual fee. Vibe starts at ₹25,000 and offers lounge access, with a ₹249 joining fee plus applicable tax and no annual fee.',
+	},
+	{
+		id: 'cc-faq-2',
+		question: 'Do I need a fixed deposit for either card?',
+		answer:
+			'Yes. Both cards use a fixed deposit (FD) with Unity Small Finance Bank as security.',
+	},
+	{
+		id: 'cc-faq-3',
+		question: 'How is my credit limit decided?',
+		answer:
+			"Your credit limit can be up to 90% of the amount you deposit. Interest earned on the FD doesn't count toward the limit.",
+	},
+	{
+		id: 'cc-faq-4',
+		question: 'Can I use these RuPay cards for UPI payments?',
+		answer:
+			'Yes. Link your card to a supported UPI app to pay eligible merchants.',
+	},
+	{
+		id: 'cc-faq-5',
+		question: 'How do I apply for a credit card through WeCredit?',
+		answer:
+			"Choose a card and tap Apply Now. Follow the prompts to submit your details and complete the bank's verification.",
+	},
+	{
+		id: 'cc-faq-6',
+		question: 'Who approves my application and issues the card?',
+		answer:
+			'WeCredit helps you start your application. Unity Small Finance Bank decides whether to approve it and issues the card.',
+	},
+	{
+		id: 'cc-faq-7',
+		question: 'Will applying for a credit card affect my CIBIL score?',
+		answer:
+			'It can. If the bank makes a hard credit enquiry, it may have a small impact on your score.',
+	},
+	{
+		id: 'cc-faq-8',
+		question: 'What happens if I close my fixed deposit early?',
+		answer:
+			'Unity Bank can deduct unpaid card dues from the deposit before releasing the remaining amount. Closing the FD early can also reduce the interest you earn.',
+	},
+	{
+		id: 'cc-faq-9',
+		question: 'What happens if I pay only the minimum amount due?',
+		answer:
+			"Interest applies to the unpaid balance. You'll also lose the interest-free period on new purchases.",
+	},
+	{
+		id: 'cc-faq-10',
+		question: 'Where can I see the full fees and card terms?',
+		answer:
+			"Unity Bank lists fees, interest rates and payment terms in the Most Important Terms and Conditions (MITC) on its website. Read Unity Bank's MITC",
+	},
+];
