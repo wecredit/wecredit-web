@@ -9,6 +9,7 @@ import { useRouter } from 'next/navigation';
 import { FaqSection, PageHeading } from '@/components/shared';
 import { PageLoader } from '@/components/shared/page-loader';
 import { useRequireLogin } from '@/hooks/use-require-login';
+import { CREDIT_CARD_FAQS } from '@/lib/constants/faqs';
 import { useAuthStore } from '@/stores/auth-store';
 import CreditCardsList from './credit-cards-list';
 import CreditCardApplyModal from './credit-card-apply-modal';
@@ -39,7 +40,7 @@ const CreditCardsPageContent = (): React.ReactNode => {
           <CreditCardsList />
         </section>
 
-        <FaqSection />
+        <FaqSection items={CREDIT_CARD_FAQS} />
       </div>
       <CreditCardApplyModal />
     </div>
