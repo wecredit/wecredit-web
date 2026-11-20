@@ -21,6 +21,7 @@ interface FaqAccordionItemProps {
 }
 
 interface FaqSectionProps {
+	items?: FaqItem[];
 	showTitle?: boolean;
 	className?: string;
 	listClassName?: string;
@@ -68,6 +69,16 @@ const FaqAccordionItem = ({
 				<div className="px-4 sm:px-5 pb-4 pt-1">
 					<p className="text-sm text-black-600 leading-relaxed whitespace-pre-line">
 						{item.answer}
+						{item.link && (
+							<a
+								href={item.link.href}
+								target="_blank"
+								rel="noopener noreferrer"
+								className="text-blue-600 underline"
+							>
+								{item.link.label}
+							</a>
+						)}
 					</p>
 				</div>
 			</motion.div>
@@ -80,6 +91,7 @@ const FaqAccordionItem = ({
  * Displays common questions about personal loans
  */
 const FaqSection = ({
+	items = STANDARD_FAQS,
 	showTitle = true,
 	className,
 	listClassName,
@@ -107,7 +119,7 @@ const FaqSection = ({
 
 			{/* FAQ Accordion */}
 			<div className={cn('max-w-6xl mx-auto space-y-1', listClassName)}>
-				{STANDARD_FAQS.map((item, index) => (
+				{items.map((item, index) => (
 					<FaqAccordionItem
 						key={item.id}
 						item={item}
