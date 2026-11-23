@@ -45,6 +45,7 @@ async function getPartners(): Promise<PartnerDetail[]> {
       (item.info as Record<string, string>)?.redirectionLink ||
       (item.link as string) ||
       '',
+    keyFactsStatement: (item.info as Record<string, string>)?.keyFactsStatement || '',
   }));
 }
 
