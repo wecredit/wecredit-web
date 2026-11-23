@@ -19,6 +19,8 @@ export interface PartnerDetail {
   email: string;
   /** Company website URL */
   websiteLink: string;
+  /** Key Facts Statement (KFS) URL */
+  keyFactsStatement?: string;
 }
 
 /**

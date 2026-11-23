@@ -82,7 +82,6 @@ const PartnerCard = ({ partner }: PartnerCardProps): JSX.Element => {
             alt={partner.companyName}
             width={80}
             height={24}
-            unoptimized
             className="h-6 w-auto max-w-[80px] object-contain"
             priority={false}
           />
@@ -123,6 +122,7 @@ const PartnerCard = ({ partner }: PartnerCardProps): JSX.Element => {
           <DetailRow label="Officer" value={partner.officer} />
           <DetailRow label="Email" value={partner.email} href={emailHref} />
           <DetailRow label="Link" value={partner.websiteLink} href={partner.websiteLink} />
+          {partner.keyFactsStatement && <DetailRow label="Key Facts Statement (KFS)" value={partner.keyFactsStatement} href={partner.keyFactsStatement} />}
         </div>
       </div>
     </div>
