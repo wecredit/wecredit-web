@@ -20,7 +20,7 @@ export interface PartnerDetail {
   /** Company website URL */
   websiteLink: string;
   /** Key Facts Statement (KFS) URL */
-  keyFactsStatement: string;
+  keyFactsStatement?: string;
 }
 
 /**
@@ -36,7 +36,6 @@ export const PERSONAL_LOAN_PARTNERS: PartnerDetail[] = [
     officer: 'Madam H M',
     email: 'grievance@smartcoin.co.in',
     websiteLink: 'https://www.olyv.co.in/',
-    keyFactsStatement: '',
   },
   {
     id: 'moneyview',
@@ -46,7 +45,6 @@ export const PERSONAL_LOAN_PARTNERS: PartnerDetail[] = [
     officer: 'Mr. Rajesh Kumar',
     email: 'grievance@moneyview.in',
     websiteLink: 'https://www.moneyview.in/',
-    keyFactsStatement: '',
   },
   {
     id: 'kreditbee',
@@ -56,7 +54,6 @@ export const PERSONAL_LOAN_PARTNERS: PartnerDetail[] = [
     officer: 'Ms. Priya Sharma',
     email: 'grievance@kreditbee.com',
     websiteLink: 'https://www.kreditbee.com/',
-    keyFactsStatement: '',
   },
   {
     id: 'lt-finance',
@@ -66,7 +63,6 @@ export const PERSONAL_LOAN_PARTNERS: PartnerDetail[] = [
     officer: 'Mr. Anil Patel',
     email: 'grievance@ltfs.com',
     websiteLink: 'https://www.ltfs.com/',
-    keyFactsStatement: '',
   },
   {
     id: 'zype',
@@ -76,6 +72,5 @@ export const PERSONAL_LOAN_PARTNERS: PartnerDetail[] = [
     officer: 'Ms. Sneha Reddy',
     email: 'grievance@zype.in',
     websiteLink: 'https://www.zype.in/',
-    keyFactsStatement: '',
   },
 ];
